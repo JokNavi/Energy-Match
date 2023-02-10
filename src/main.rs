@@ -1,5 +1,7 @@
-
+mod data;
+const SIDE_AMOUNT: i32 = 7;
 
 fn main() {
-    println!("main");
+    let cube = data::cube::Cube::new(0);
+    
 }

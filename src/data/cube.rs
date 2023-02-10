@@ -1,3 +1,5 @@
+use  crate::Data::side::Side;
+
 pub struct Cube {
     rotations: i32,
     side: Side,
@@ -16,17 +18,4 @@ impl Cube {
     }
 }
 
-pub struct Side {
-    display_value: i32,
-    id: i32,
-}
-
-impl Side {
-    fn new(id:i32) -> Self {
-        Side {
-            display_value: id,
-            id,
-        }
-    }
-}
 

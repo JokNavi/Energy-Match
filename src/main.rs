@@ -1,7 +1,8 @@
-mod data;
+mod Data;
+mod Display;
 const SIDE_AMOUNT: i32 = 7;
 
 fn main() {
-    let cube = data::cube::Cube::new(0);
-    
+    let cube = Data::cube::Cube::new(0);
+
 }

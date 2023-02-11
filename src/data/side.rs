@@ -1,14 +1,14 @@
-
+#[derive(Clone)]
 pub struct Side {
-    display_value: i32,
-    id: i32,
+    pub display_value: i32,
+    index: i32,
 }
 
 impl Side {
-    pub fn new(id:i32) -> Self {
+    pub fn new(index: i32) -> Self {
         Side {
-            display_value: id,
-            id,
+            display_value: index,
+            index,
         }
     }
 }

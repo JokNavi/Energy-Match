@@ -1,13 +1,17 @@
+use crate::program::Program;
+
 mod data;
 mod display;
-use data::bar;
+mod program;
+mod users;
 const SIDE_AMOUNT: i32 = 4;
 
 fn main() {
-    let mut bar = data::bar::Bar::new();
-    println!("Cube index: 0");
-    bar.selected_cube.swipe_down(2);
-    bar.swipe(bar::Direction::Left, 5);
-    bar.swipe(bar::Direction::Right, 5);
-    bar.selected_cube.swipe_up(2);
+    println!("Creating new user...");
+    let mut program = Program::new(None);
+    match program.user.save_user() {
+        Ok(_) => println!("User saved successfully!"),
+        Err(err) => println!("User save failed. {err}"),
+    };
+    
 }

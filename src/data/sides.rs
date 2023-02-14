@@ -1,4 +1,3 @@
-#[derive(Clone, Copy)]
 pub struct Side {
     pub index: i32,
 }

@@ -10,6 +10,6 @@ const SIDE_AMOUNT: i32 = 4;
 fn main() {
     let mut game = Game::new();
     println!("{}", game.shape.rotations);
-    game.shape.swipe_up(2);
+    game.shape.swipe_down(2);
     println!("{}", game.shape.rotations);
 }

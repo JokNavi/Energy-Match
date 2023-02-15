@@ -18,7 +18,7 @@ impl Game {
         }
     }
 
-    fn get_side(&mut self, index: i32) -> Shape {
+    fn get_shape(&mut self, index: i32) -> Shape {
         if let std::collections::hash_map::Entry::Vacant(e) = self.shape_collection.entry(index) {
             e.insert(Shape::new(index));
             self.shape_collection[&index].clone()
@@ -27,24 +27,48 @@ impl Game {
         }
     }
 
-    pub fn swipe_left(&mut self, amount: i32) {
-        for i in self.shape.index..(self.shape.index + amount){
-            match self.shape_collection.get(&i){
-                None => continue,
-                Some(shape) => self.local_rotations += self.shape.rotations,
-            };
+    fn get_range(start: i32, end: i32) -> Vec<i32> {
+        if start > end {
+            return (end..=start).collect();
+        } else {
+            return (start..=end).collect();
         }
-        self.shape = self.get_side(self.shape.index + amount);
+    }
+
+    pub fn swipe_left(&mut self, amount: i32) {
+        for i in Self::get_range(self.shape.index, self.shape.index + amount) {
+            //println!("i: {}", self.shape.index - i);
+            match self.shape_collection.get(&i) {
+                None => continue,
+                Some(shape) => self.local_rotations += shape.rotations,
+            }
+        }
+        self.shape = self.get_shape(self.shape.index + amount);
     }
 
     pub fn swipe_right(&mut self, amount: i32) {
-        
-        for i in self.shape.index..(self.shape.index - amount){
-            match self.shape_collection.get(&i){
+        for i in Self::get_range(self.shape.index, self.shape.index - amount) {
+            //println!("i: {i}");
+            match self.shape_collection.get(&i) {
                 None => continue,
-                Some(shape) => self.local_rotations -= self.shape.rotations,
-            };
+                Some(shape) => self.local_rotations -= shape.rotations,
+            }
         }
-        self.shape = self.get_side(self.shape.index - amount);
+        self.shape = self.get_shape(self.shape.index - amount);
+    }
+
+    pub fn contains_index(&mut self, index: i32) -> bool {
+        matches!(self.shape_collection.get_key_value(&index), Some(_))
+    }
+
+    pub fn check_pattern(&mut self, pattern:Vec<i32>){
+        let mut current_pattern: Vec<i32> = Vec::new();
+        let my_vec = vec![1, 2, 3, 4, 5];
+        for (i, shape) in self.shape_collection.iter() {
+            current_pattern.push(*i);
+            if &pattern[..=current_pattern.len()] == &current_pattern[..] {
+
+            }
+        }
     }
 }

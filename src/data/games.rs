@@ -28,22 +28,23 @@ impl Game {
     }
 
     pub fn swipe_left(&mut self, amount: i32) {
-        self.shape = self.get_side(self.shape.index - amount);
         for i in self.shape.index..(self.shape.index + amount){
             match self.shape_collection.get(&i){
                 None => continue,
-                Some(shape) => self.local_rotations + shape.rotations,
+                Some(shape) => self.local_rotations += self.shape.rotations,
             };
         }
+        self.shape = self.get_side(self.shape.index + amount);
     }
 
     pub fn swipe_right(&mut self, amount: i32) {
-        self.shape = self.get_side(self.shape.index - amount);
+        
         for i in self.shape.index..(self.shape.index - amount){
             match self.shape_collection.get(&i){
                 None => continue,
-                Some(shape) => self.local_rotations - shape.rotations,
+                Some(shape) => self.local_rotations -= self.shape.rotations,
             };
         }
+        self.shape = self.get_side(self.shape.index - amount);
     }
 }

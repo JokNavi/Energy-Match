@@ -1,5 +1,5 @@
 use super::shapes::Shape;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 #[derive(Clone)]
 pub struct Game {
@@ -61,14 +61,7 @@ impl Game {
         matches!(self.shape_collection.get_key_value(&index), Some(_))
     }
 
-    pub fn check_pattern(&mut self, pattern:Vec<i32>){
-        let mut current_pattern: Vec<i32> = Vec::new();
-        let my_vec = vec![1, 2, 3, 4, 5];
-        for (i, shape) in self.shape_collection.iter() {
-            current_pattern.push(*i);
-            if &pattern[..=current_pattern.len()] == &current_pattern[..] {
-
-            }
-        }
+    pub fn check_pattern_exists(&mut self, pattern: Vec<i32>) -> bool {
+        self.shape_collection.keys().zip(&pattern).filter(|&(a, b)| a == b).count() == pattern.len()
     }
 }

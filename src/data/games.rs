@@ -62,6 +62,6 @@ impl Game {
     }
 
     pub fn check_pattern_exists(&mut self, pattern: Vec<i32>) -> bool {
-        self.shape_collection.keys().zip(&pattern).filter(|&(a, b)| a == b).count() == pattern.len()
+        self.shape_collection.values().map(|value| &value.rotations).zip(&pattern).filter(|&(a, b)| a == b).count() == pattern.len()
     }
 }

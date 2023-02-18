@@ -86,13 +86,14 @@ impl Game {
 
     pub fn print_game_snippet(&mut self){
         let left_cube = self.get_shape(self.shape.index-1);
-        let main_cube = self.shape.clone();
+        let middle_cube = self.shape.clone();
         let right_cube = self.get_shape(self.shape.index+1);
 
-        println!("{0:^20}", "------");
-        println!("{0:^10}", format!("| {0: ^5} |", Shape::adjust_index(main_cube.rotations+1)));
-        println!("      | {0: ^5} || {1: ^5} || {2: ^5} |", left_cube.rotations, main_cube.rotations, right_cube.rotations); 
-        println!("{0:^20}", "------");
+        println!("       ____ ____ _____    ");
+        println!("      / {0:^2} / {1:^2} / {2:^2} /|     ", Shape::adjust_index(left_cube.rotations+1), Shape::adjust_index(middle_cube.rotations+1), Shape::adjust_index(right_cube.rotations+1),);
+        println!("/⎺⎺⎺⎺ | {0:^2} | {1:^2} | {2:^2} |/⎺⎺⎺⎺/", left_cube.rotations, middle_cube.rotations, right_cube.rotations,);
+        println!("⎺⎺⎺⎺⎺ ⎺⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺⎺");
+        
     }
 
     pub fn game_loop() -> Result<(), String> {

@@ -11,11 +11,8 @@ fn debug(game: &Game, action: &str) {
 }
 
 fn main() {
-    let mut pattern: Vec<i32> = Vec::<i32>::new();
     let mut game = Game::new();
-    debug(&game, "Init");
     game.swipe_left(1);
-    pattern.push(game.shape.rotations);
-    debug(&game, "game.swipe_right(1);");
-    println!("{}",game.check_pattern_exists(pattern));
+    game.swipe_right(1);
+    game.print_game_snippet();
 }

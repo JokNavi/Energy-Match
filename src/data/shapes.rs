@@ -41,7 +41,7 @@ impl Shape {
         self.side = self.get_side(self.rotations)
     }
 
-    fn adjust_index(index: i32) -> i32 {
+    pub fn adjust_index(index: i32) -> i32 {
         match index {
             _ if index > crate::SIDE_AMOUNT => index % crate::SIDE_AMOUNT,
             _ if index < 0 => index.abs(),

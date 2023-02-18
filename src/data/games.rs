@@ -1,5 +1,8 @@
 use super::shapes::Shape;
-use std::collections::{HashMap, HashSet};
+use std::{
+    collections::HashMap,
+    io::{self, Write},
+};
 
 #[derive(Clone)]
 pub struct Game {
@@ -29,9 +32,9 @@ impl Game {
 
     fn get_range(start: i32, end: i32) -> Vec<i32> {
         if start > end {
-            return (end..=start).collect();
+            (end..=start).collect()
         } else {
-            return (start..=end).collect();
+            (start..=end).collect()
         }
     }
 
@@ -57,11 +60,43 @@ impl Game {
         self.shape = self.get_shape(self.shape.index - amount);
     }
 
-    pub fn contains_index(&mut self, index: i32) -> bool {
-        matches!(self.shape_collection.get_key_value(&index), Some(_))
+    pub fn check_pattern_exists(&mut self, pattern: Vec<i32>) -> bool {
+        self.shape_collection
+            .values()
+            .map(|value| &value.rotations)
+            .zip(&pattern)
+            .filter(|&(a, b)| a == b)
+            .count()
+            == pattern.len()
     }
 
-    pub fn check_pattern_exists(&mut self, pattern: Vec<i32>) -> bool {
-        self.shape_collection.values().map(|value| &value.rotations).zip(&pattern).filter(|&(a, b)| a == b).count() == pattern.len()
+    fn ask_input(input_text: String, error_text: String) -> Result<String, std::io::Error> {
+        print!("{input_text}");
+        if let Err(err) = io::stdout().flush() {
+            println!("{error_text}, {err}");
+            return Ok(Self::ask_input(input_text, error_text).expect("Function can only return OK(). "));
+        };
+        let mut response = String::new();
+        if let Err(err) = io::stdin().read_line(&mut response) {
+            println!("{error_text}, {err}");
+            return Ok(Self::ask_input(input_text, error_text).expect("Function can only return OK(). "));
+        };
+        Ok(response)
+    }
+
+    pub fn print_game_snippet(&mut self){
+        let left_cube = self.get_shape(self.shape.index-1);
+        let main_cube = self.shape.clone();
+        let right_cube = self.get_shape(self.shape.index+1);
+
+        println!("{0:^20}", "------");
+        println!("{0:^10}", format!("| {0: ^5} |", Shape::adjust_index(main_cube.rotations+1)));
+        println!("      | {0: ^5} || {1: ^5} || {2: ^5} |", left_cube.rotations, main_cube.rotations, right_cube.rotations); 
+        println!("{0:^20}", "------");
+    }
+
+    pub fn game_loop() -> Result<(), String> {
+        println!("Starting game...");
+        Ok(())
     }
 }

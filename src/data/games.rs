@@ -1,4 +1,5 @@
 use super::shapes::Shape;
+use regex::Regex;
 use std::{
     collections::HashMap,
     io::{self, Write},
@@ -74,30 +75,103 @@ impl Game {
         print!("{input_text}");
         if let Err(err) = io::stdout().flush() {
             println!("{error_text}, {err}");
-            return Ok(Self::ask_input(input_text, error_text).expect("Function can only return OK(). "));
+            return Ok(
+                Self::ask_input(input_text, error_text).expect("Function can only return OK(). ")
+            );
         };
         let mut response = String::new();
         if let Err(err) = io::stdin().read_line(&mut response) {
             println!("{error_text}, {err}");
-            return Ok(Self::ask_input(input_text, error_text).expect("Function can only return OK(). "));
+            return Ok(
+                Self::ask_input(input_text, error_text).expect("Function can only return OK(). ")
+            );
         };
         Ok(response)
     }
 
-    pub fn print_game_snippet(&mut self){
-        let left_cube = self.get_shape(self.shape.index-1);
+    pub fn print_game_snippet(&mut self) {
+        let left_cube = self.get_shape(self.shape.index - 1);
         let middle_cube = self.shape.clone();
-        let right_cube = self.get_shape(self.shape.index+1);
+        let right_cube = self.get_shape(self.shape.index + 1);
 
         println!("       ____ ____ _____    ");
-        println!("      / {0:^2} / {1:^2} / {2:^2} /|     ", Shape::adjust_index(left_cube.rotations+1), Shape::adjust_index(middle_cube.rotations+1), Shape::adjust_index(right_cube.rotations+1),);
-        println!("/⎺⎺⎺⎺ | {0:^2} | {1:^2} | {2:^2} |/⎺⎺⎺⎺/", left_cube.rotations, middle_cube.rotations, right_cube.rotations,);
+        println!(
+            "      / {0:^2} / {1:^2} / {2:^2} /|     ",
+            Shape::adjust_index(left_cube.rotations + 1),
+            Shape::adjust_index(middle_cube.rotations + 1),
+            Shape::adjust_index(right_cube.rotations + 1),
+        );
+        println!(
+            "/⎺⎺⎺⎺ | {0:^2} | {1:^2} | {2:^2} |/⎺⎺⎺⎺/",
+            left_cube.rotations, middle_cube.rotations, right_cube.rotations,
+        );
         println!("⎺⎺⎺⎺⎺ ⎺⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺⎺");
-        
     }
 
-    pub fn game_loop() -> Result<(), String> {
+    pub fn game_loop(&mut self) {
         println!("Starting game...");
-        Ok(())
+        println!("Please Select an action.");
+        println!("Type: \"up x\" to rotate the focused cube up x times.");
+        println!("Type: \"down x\" to rotate the focused cube down x times.");
+        println!("Type: \"left x\" to move the current selection left x times.");
+        println!("Type: \"right x\" To move the current selection right x times.");
+        println!("Type: \"quit\" To exit the program.\n");
+        self.print_game_snippet();
+        loop{
+            println!("{}", self.shape.index);
+            self.do_action();
+            self.print_game_snippet();
+            self.check_pattern_exists(vec![1, 1, 1]);
+        }
+    }
+
+    fn do_action(&mut self) {
+        let mut chosen_action = String::new();
+        let re = Regex::new(r"^(up|down|left|right) \d+|^(?i:quit)$").unwrap();
+        loop {
+            chosen_action = Self::ask_input(
+                "Please input an action: ".to_string(),
+                "Proccessing action went wrong. My bad.".to_string(),
+            )
+            .expect("Function can only return OK(). ")
+            .strip_suffix("\r\n")
+            .unwrap()
+            .to_string();
+            if re.is_match(&chosen_action) {
+                let chosen_action_split = chosen_action.split(" ").collect::<Vec<&str>>();
+                match chosen_action_split[0] {
+                    "up" => self.shape.swipe_up(
+                        chosen_action_split[1]
+                            .parse::<i32>()
+                            .expect("I just confirmed there's a number with regex."),
+                    ),
+                    "down" => self.shape.swipe_down(
+                        chosen_action_split[1]
+                            .parse::<i32>()
+                            .expect("I just confirmed there's a number with regex."),
+                    ),
+                    "left" => self.swipe_left(
+                        chosen_action_split[1]
+                            .parse::<i32>()
+                            .expect("I just confirmed there's a number with regex."),
+                    ),
+                    "right" => self.swipe_right(
+                        chosen_action_split[1]
+                            .parse::<i32>()
+                            .expect("I just confirmed there's a number with regex."),
+                    ),
+                    "quit" => {
+                        println!("Closing program...");
+                        std::process::exit(0)
+                    }
+                    _ => println!("Proccessing action went wrong. My bad."),
+                }
+                println!("");
+                break
+            } else {
+                println!("Invalid action selected. Please try again.");
+                continue;
+            }
+        }
     }
 }

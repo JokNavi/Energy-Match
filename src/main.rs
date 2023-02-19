@@ -12,9 +12,5 @@ fn debug(game: &Game, action: &str) {
 
 fn main() {
     let mut game = Game::new();
-    game.swipe_left(1);
-    game.swipe_right(1);
-    game.swipe_right(1);
-    game.swipe_left(1);
-    game.print_game_snippet();
+    game.game_loop()
 }

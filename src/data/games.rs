@@ -101,16 +101,12 @@ impl Game {
     }
 
     pub fn print_game_snippet(&mut self) {
-        let left_cube = self.get_shape(1).rotations;
-        let middle_cube = self.get_shape(0).rotations;
-        let right_cube = self.get_shape(-1).rotations;
-
+        let left_cube = self.get_shape(1).get_side().index;
+        let middle_cube = self.get_shape(0).get_side().index;
+        let right_cube = self.get_shape(-1).get_side().index;
         println!("       ____ ____ _____    ");
         println!("      /____/____/____/|     ",);
-        println!(
-            "/⎺⎺⎺⎺ | {0:^2} | {1:^2} | {2:^2} |/⎺⎺⎺⎺/",
-            left_cube, middle_cube, right_cube,
-        );
+        println!("/⎺⎺⎺⎺ | {left_cube:^2} | {middle_cube:^2} | {right_cube:^2} |/⎺⎺⎺⎺/",);
         println!("⎺⎺⎺⎺⎺ ⎺⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺⎺");
     }
 
@@ -147,7 +143,7 @@ impl Game {
             .unwrap()
             .to_string();
             if re.is_match(&chosen_action) {
-                let chosen_action_split = chosen_action.split(" ").collect::<Vec<&str>>();
+                let chosen_action_split = chosen_action.split(' ').collect::<Vec<&str>>();
                 match chosen_action_split[0] {
                     "up" => self.get_shape(self.shape_index).swipe_up(
                         chosen_action_split[1]

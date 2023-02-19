@@ -95,12 +95,7 @@ impl Game {
         let right_cube = self.get_shape(self.shape.index + 1);
 
         println!("       ____ ____ _____    ");
-        println!(
-            "      / {0:^2} / {1:^2} / {2:^2} /|     ",
-            Shape::adjust_index(left_cube.rotations + 1),
-            Shape::adjust_index(middle_cube.rotations + 1),
-            Shape::adjust_index(right_cube.rotations + 1),
-        );
+        println!("      /____/____/____/|     ",);
         println!(
             "/⎺⎺⎺⎺ | {0:^2} | {1:^2} | {2:^2} |/⎺⎺⎺⎺/",
             left_cube.rotations, middle_cube.rotations, right_cube.rotations,
@@ -118,10 +113,13 @@ impl Game {
         println!("Type: \"quit\" To exit the program.\n");
         self.print_game_snippet();
         loop{
-            println!("{}", self.shape.index);
+            //println!("{}", self.shape.index);
             self.do_action();
             self.print_game_snippet();
-            self.check_pattern_exists(vec![1, 1, 1]);
+            if self.check_pattern_exists(vec![1, 1, 1]) {
+                println!("You win!!!");
+                std::process::exit(0);
+            }
         }
     }
 

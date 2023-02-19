@@ -5,30 +5,40 @@ use std::{
     io::{self, Write},
 };
 
-
 pub struct Game {
     pub local_rotations: i32,
     pub shape_index: i32,
     pub shape_collection: HashMap<i32, Shape>,
 }
 
-/*
+
 impl Game {
     pub fn new() -> Self {
-        let shape_collection = HashMap::from([(0, Shape::new(0))]);
+        let mut shape_collection: HashMap<i32, Shape> = HashMap::new();
+        shape_collection.insert(0, Shape::new(0));
         Game {
-            local_rotations: 0,
-            shape: shape_collection[&0].clone(),
-            shape_collection,
+            local_rotations: shape_collection[&0].rotations,
+            shape_index: 0,
+            shape_collection: shape_collection,
         }
     }
 
-    fn get_shape(&mut self, index: i32) -> Shape {
+    //&self.shape_index
+    pub fn get_shape(&mut self, index: i32) -> &mut Shape {
         if let std::collections::hash_map::Entry::Vacant(e) = self.shape_collection.entry(index) {
             e.insert(Shape::new(index));
-            self.shape_collection[&index].clone()
+            self.shape_collection.get_mut(&index).unwrap()
         } else {
-            self.shape_collection[&index].clone()
+            self.shape_collection.get_mut(&index).unwrap()
+        }
+    }
+
+    pub fn get_shape_read_only(&self, index: i32) -> &Shape {
+        if let std::collections::hash_map::Entry::Vacant(e) = self.shape_collection.entry(index) {
+            e.insert(Shape::new(index));
+            self.shape_collection.get(&index).unwrap()
+        } else {
+            self.shape_collection.get(&index).unwrap()
         }
     }
 
@@ -40,26 +50,26 @@ impl Game {
         }
     }
 
+
     pub fn swipe_left(&mut self, amount: i32) {
-        for i in Self::get_range(self.shape.index, self.shape.index + amount) {
-            //println!("i: {}", self.shape.index - i);
+        self.shape_index = self.get_shape(self.shape_index).index + amount;
+        for i in Self::get_range(self.get_shape(self.shape_index).index, self.get_shape(self.shape_index).index + amount) {
             match self.shape_collection.get(&i) {
                 None => continue,
                 Some(shape) => self.local_rotations += shape.rotations,
             }
         }
-        self.shape = self.get_shape(self.shape.index + amount);
     }
 
+
     pub fn swipe_right(&mut self, amount: i32) {
-        for i in Self::get_range(self.shape.index, self.shape.index - amount) {
-            //println!("i: {i}");
+        self.shape_index = self.get_shape(self.shape_index).index + amount;
+        for i in Self::get_range(self.get_shape(self.shape_index).index, self.get_shape(self.shape_index).index - amount) {
             match self.shape_collection.get(&i) {
                 None => continue,
                 Some(shape) => self.local_rotations -= shape.rotations,
             }
         }
-        self.shape = self.get_shape(self.shape.index - amount);
     }
 
     pub fn check_pattern_exists(&mut self, pattern: Vec<i32>) -> bool {
@@ -91,9 +101,9 @@ impl Game {
     }
 
     pub fn print_game_snippet(&mut self) {
-        let left_cube = self.get_shape(self.shape.index - 1);
-        let middle_cube = self.shape.clone();
-        let right_cube = self.get_shape(self.shape.index + 1);
+        let left_cube = self.get_shape(1);
+        let middle_cube = self.get_shape(0);
+        let right_cube = self.get_shape(-1);
 
         println!("       ____ ____ _____    ");
         println!("      /____/____/____/|     ",);
@@ -139,12 +149,12 @@ impl Game {
             if re.is_match(&chosen_action) {
                 let chosen_action_split = chosen_action.split(" ").collect::<Vec<&str>>();
                 match chosen_action_split[0] {
-                    "up" => self.shape.swipe_up(
+                    "up" => self.get_shape(self.shape_index).swipe_up(
                         chosen_action_split[1]
                             .parse::<i32>()
                             .expect("I just confirmed there's a number with regex."),
                     ),
-                    "down" => self.shape.swipe_down(
+                    "down" => self.get_shape(self.shape_index).swipe_down(
                         chosen_action_split[1]
                             .parse::<i32>()
                             .expect("I just confirmed there's a number with regex."),
@@ -175,4 +185,4 @@ impl Game {
     }
 
 }
-*/
+

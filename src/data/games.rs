@@ -33,7 +33,7 @@ impl Game {
         }
     }
 
-    pub fn get_shape_read_only(&self, index: i32) -> &Shape {
+    pub fn get_shape_read_only(& mut self, index: i32) -> &Shape {
         if let std::collections::hash_map::Entry::Vacant(e) = self.shape_collection.entry(index) {
             e.insert(Shape::new(index));
             self.shape_collection.get(&index).unwrap()
@@ -101,15 +101,15 @@ impl Game {
     }
 
     pub fn print_game_snippet(&mut self) {
-        let left_cube = self.get_shape(1);
-        let middle_cube = self.get_shape(0);
-        let right_cube = self.get_shape(-1);
+        let left_cube = self.get_shape(1).rotations;
+        let middle_cube = self.get_shape(0).rotations;
+        let right_cube = self.get_shape(-1).rotations;
 
         println!("       ____ ____ _____    ");
         println!("      /____/____/____/|     ",);
         println!(
             "/⎺⎺⎺⎺ | {0:^2} | {1:^2} | {2:^2} |/⎺⎺⎺⎺/",
-            left_cube.rotations, middle_cube.rotations, right_cube.rotations,
+            left_cube, middle_cube, right_cube,
         );
         println!("⎺⎺⎺⎺⎺ ⎺⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺⎺");
     }

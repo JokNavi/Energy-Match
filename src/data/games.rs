@@ -5,13 +5,14 @@ use std::{
     io::{self, Write},
 };
 
-#[derive(Clone)]
+
 pub struct Game {
     pub local_rotations: i32,
-    pub shape: Shape,
+    pub shape_index: i32,
     pub shape_collection: HashMap<i32, Shape>,
 }
 
+/*
 impl Game {
     pub fn new() -> Self {
         let shape_collection = HashMap::from([(0, Shape::new(0))]);
@@ -172,4 +173,6 @@ impl Game {
             }
         }
     }
+
 }
+*/

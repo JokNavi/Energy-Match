@@ -1,16 +1,12 @@
 mod data;
-use data::games::Game;
+use data::{games::Game, shapes::Shape};
+use std::collections::HashMap;
 
 const SIDE_AMOUNT: i32 = 4;
 
-fn debug(game: &Game, action: &str) {
-    println!("\nDid {action}");
-    println!("game.shape.index: {}", game.shape.index);
-    println!("game.shape.rotations: {}", game.shape.rotations);
-    println!("game.local_rotations: {}", game.local_rotations);
-}
-
 fn main() {
-    let mut game = Game::new();
-    game.game_loop()
+    let mut shape = Shape::new(0);
+    println!("{}", shape.rotations);
+    shape.swipe_up(1);
+    println!("{}", shape.get_side().index);
 }

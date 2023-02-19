@@ -106,10 +106,10 @@ impl Game {
     pub fn game_loop(&mut self) {
         println!("Starting game...");
         println!("Please Select an action.");
-        println!("Type: \"up x\" to rotate the focused cube up x times.");
-        println!("Type: \"down x\" to rotate the focused cube down x times.");
-        println!("Type: \"left x\" to move the current selection left x times.");
-        println!("Type: \"right x\" To move the current selection right x times.");
+        println!("Type: \"up x\" to rotate the middle cube up x times.");
+        println!("Type: \"down x\" to rotate the middle cube down x times.");
+        println!("Type: \"left x\" to move the current cube left x times.");
+        println!("Type: \"right x\" To move the current cube right x times.");
         println!("Type: \"quit\" To exit the program.\n");
         self.print_game_snippet();
         loop{

@@ -11,7 +11,6 @@ pub struct Game {
     pub shape_collection: HashMap<i32, Shape>,
 }
 
-
 impl Game {
     pub fn new() -> Self {
         let mut shape_collection: HashMap<i32, Shape> = HashMap::new();
@@ -43,7 +42,10 @@ impl Game {
 
     pub fn swipe_left(&mut self, amount: i32) {
         self.shape_index = self.get_shape(self.shape_index).index + amount;
-        for i in Self::get_range(self.get_shape(self.shape_index).index, self.get_shape(self.shape_index).index + amount) {
+        for i in Self::get_range(
+            self.get_shape(self.shape_index).index,
+            self.get_shape(self.shape_index).index + amount,
+        ) {
             match self.shape_collection.get(&i) {
                 None => continue,
                 Some(shape) => self.local_rotations += shape.rotations,
@@ -53,7 +55,10 @@ impl Game {
 
     pub fn swipe_right(&mut self, amount: i32) {
         self.shape_index = self.get_shape(self.shape_index).index + amount;
-        for i in Self::get_range(self.get_shape(self.shape_index).index, self.get_shape(self.shape_index).index - amount) {
+        for i in Self::get_range(
+            self.get_shape(self.shape_index).index,
+            self.get_shape(self.shape_index).index - amount,
+        ) {
             match self.shape_collection.get(&i) {
                 None => continue,
                 Some(shape) => self.local_rotations -= shape.rotations,
@@ -109,7 +114,7 @@ impl Game {
         println!("Type: \"right x\" To move the current cube right x times.");
         println!("Type: \"quit\" To exit the program.\n");
         self.print_game_snippet();
-        loop{
+        loop {
             //println!("{}", self.shape.index);
             self.do_action();
             self.print_game_snippet();
@@ -162,13 +167,11 @@ impl Game {
                     _ => println!("Proccessing action went wrong. My bad."),
                 }
                 println!("");
-                break
+                break;
             } else {
                 println!("Invalid action selected. Please try again.");
                 continue;
             }
         }
     }
-
 }
-

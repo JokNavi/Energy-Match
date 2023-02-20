@@ -21,7 +21,9 @@ impl Shape {
     }
 
     pub fn get_side(&mut self) -> &mut Side {
-        if let std::collections::hash_map::Entry::Vacant(e) = self.side_collection.entry(self.rotations) {
+        if let std::collections::hash_map::Entry::Vacant(e) =
+            self.side_collection.entry(self.rotations)
+        {
             e.insert(Side::new(self.rotations));
             self.side_collection.get_mut(&self.rotations).unwrap()
         } else {

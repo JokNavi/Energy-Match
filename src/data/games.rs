@@ -19,7 +19,7 @@ impl Game {
         Game {
             local_rotations: shape_collection[&0].rotations,
             shape_index: 0,
-            shape_collection: shape_collection,
+            shape_collection,
         }
     }
 
@@ -33,15 +33,6 @@ impl Game {
         }
     }
 
-    pub fn get_shape_read_only(& mut self, index: i32) -> &Shape {
-        if let std::collections::hash_map::Entry::Vacant(e) = self.shape_collection.entry(index) {
-            e.insert(Shape::new(index));
-            self.shape_collection.get(&index).unwrap()
-        } else {
-            self.shape_collection.get(&index).unwrap()
-        }
-    }
-
     fn get_range(start: i32, end: i32) -> Vec<i32> {
         if start > end {
             (end..=start).collect()
@@ -49,7 +40,6 @@ impl Game {
             (start..=end).collect()
         }
     }
-
 
     pub fn swipe_left(&mut self, amount: i32) {
         self.shape_index = self.get_shape(self.shape_index).index + amount;
@@ -60,7 +50,6 @@ impl Game {
             }
         }
     }
-
 
     pub fn swipe_right(&mut self, amount: i32) {
         self.shape_index = self.get_shape(self.shape_index).index + amount;
@@ -101,17 +90,14 @@ impl Game {
     }
 
     pub fn print_game_snippet(&mut self) {
-        let left_cube = self.get_shape(1).rotations;
-        let middle_cube = self.get_shape(0).rotations;
-        let right_cube = self.get_shape(-1).rotations;
+        let left_cube = self.get_shape(1).get_side().index;
+        let middle_cube = self.get_shape(0).get_side().index;
+        let right_cube = self.get_shape(-1).get_side().index;
 
-        println!("       ____ ____ _____    ");
-        println!("      /____/____/____/|     ",);
-        println!(
-            "/⎺⎺⎺⎺ | {0:^2} | {1:^2} | {2:^2} |/⎺⎺⎺⎺/",
-            left_cube, middle_cube, right_cube,
-        );
-        println!("⎺⎺⎺⎺⎺ ⎺⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺⎺");
+        println!("       ____ ____ ____ ____ _____   ");
+        println!("      /____/____/____/____/____/|     ",);
+        println!("/⎺⎺⎺⎺ | {left_cube:^2} | {middle_cube:^2} | {middle_cube:^2} | {middle_cube:^2} | {right_cube:^2} |/⎺⎺⎺⎺/");
+        println!("⎺⎺⎺⎺⎺ ⎺⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺⎺");
     }
 
     pub fn game_loop(&mut self) {

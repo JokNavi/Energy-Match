@@ -16,7 +16,7 @@ impl Shape {
         Shape {
             index,
             rotations,
-            side_collection: side_collection,
+            side_collection,
         }
     }
 

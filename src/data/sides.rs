@@ -2,20 +2,26 @@ use colored::{ColoredString, Colorize};
 
 #[derive(Clone)]
 pub struct Side {
-    pub index: i32,
+    pub side: i32,
     pub colour: ColoredString,
 }
 
 impl Side {
-    pub fn new(index: i32) -> Self {
+    pub fn new(side: i32) -> Self {
         Side {
-            index,
-            colour: index.to_string().color(
-                crate::COLOURS
-                    .get(&index)
-                    .expect("User should have added all colours and indexes linked as options")
-                    .clone(),
-            ),
+            side,
+            colour: side.to_string().color(Self::colours(side)),
+        }
+    }
+
+    fn colours(accesor: i32) -> String{
+        println!("{}", &accesor);
+        match accesor{
+            1 => "red".to_string(),
+            2 => "blue".to_string(),
+            3 => "green".to_string(),
+            4 => "yellow".to_string(),
+            _ => panic!("Invalid Colour function."),
         }
     }
 }

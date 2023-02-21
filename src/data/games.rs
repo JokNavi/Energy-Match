@@ -1,4 +1,4 @@
-use super::shapes::Shape;
+use super::visual_objects::shapes::Shape;
 use colored::{ColoredString, Colorize};
 use rand::Rng;
 use regex::Regex;
@@ -6,13 +6,12 @@ use std::{
     collections::HashMap,
     io::{self, Write},
 };
-use crate::data::sides::colours;
 
 pub struct Game {
     pub local_rotations: i32,
     pub shape_index: i32,
     pub shape_collection: HashMap<i32, Shape>,
-    pub target_patttern: Vec<ColoredString>,
+    pub target_patttern: Vec<i32>,
     pub moves_done: i32,
 }
 
@@ -24,15 +23,23 @@ impl Game {
             local_rotations: shape_collection[&0].rotations,
             shape_index: 0,
             shape_collection,
-            target_patttern: Self:: generate_target_string(rand::thread_rng().gen_range(5..=5)),
+            target_patttern: Self::generate_target_pattern(rand::thread_rng().gen_range(5..=5)),
             moves_done: 0,
         }
     }
 
-    pub fn generate_target_string(length: i32) -> Vec<ColoredString>{
-        let mut target_pattern: Vec<ColoredString> = Vec::new();
+    pub fn print_target_pattern(target_pattern: &Vec<i32>){
+        let mut display_pattern = Vec::<ColoredString>::new();
+        for rotation in target_pattern{
+            display_pattern.push("??".to_string().color(colours(rotation.clone())));
+        }
+        println!("{:#?}", display_pattern);
+    }
+
+    pub fn generate_target_pattern(length: i32) -> Vec<i32>{
+        let mut target_pattern: Vec<i32> = Vec::new();
         for _ in 1..=length{
-            target_pattern.push("??".to_string().color(colours(rand::thread_rng().gen_range(1..=crate::SIDE_AMOUNT))));
+            target_pattern.push(rand::thread_rng().gen_range(1..=crate::SIDE_AMOUNT));
         }
         target_pattern
     }
@@ -120,6 +127,7 @@ impl Game {
         println!("      /____/____/____/____/____/|     ",);
         println!("/⎺⎺⎺⎺ | {left_most_cube:^2} | {left_cube:^2} | {middle_cube:^2} | {right_cube:^2} | {right_most_cube:^2} |/⎺⎺⎺⎺/");
         println!("⎺⎺⎺⎺⎺ ⎺⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺⎺");
+        Self::print_target_pattern(&self.target_patttern);
     }
 
     pub fn game_loop(&mut self) {

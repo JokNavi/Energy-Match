@@ -1,3 +1,3 @@
 pub mod games;
-pub mod shapes;
-pub mod sides;
+pub mod colours;
+mod visual_objects;

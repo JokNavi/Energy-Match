@@ -1,4 +1,4 @@
-use crate::data::colors::{color_selector, ColoredText};
+use crate::data::Details::colors::{ColoredText, color_selector};
 
 pub struct Side {
     pub index: i32,

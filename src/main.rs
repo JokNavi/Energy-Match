@@ -1,5 +1,4 @@
 mod data;
-use std::collections::HashMap;
 
 use data::games::Game;
 

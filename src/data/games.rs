@@ -1,14 +1,19 @@
 use super::shapes::Shape;
+use colored::{ColoredString, Colorize};
+use rand::Rng;
 use regex::Regex;
 use std::{
     collections::HashMap,
     io::{self, Write},
 };
+use crate::data::sides::colours;
 
 pub struct Game {
     pub local_rotations: i32,
     pub shape_index: i32,
     pub shape_collection: HashMap<i32, Shape>,
+    pub target_patttern: Vec<ColoredString>,
+    pub moves_done: i32,
 }
 
 impl Game {
@@ -19,7 +24,17 @@ impl Game {
             local_rotations: shape_collection[&0].rotations,
             shape_index: 0,
             shape_collection,
+            target_patttern: Self:: generate_target_string(rand::thread_rng().gen_range(5..=5)),
+            moves_done: 0,
         }
+    }
+
+    pub fn generate_target_string(length: i32) -> Vec<ColoredString>{
+        let mut target_pattern: Vec<ColoredString> = Vec::new();
+        for _ in 1..=length{
+            target_pattern.push("??".to_string().color(colours(rand::thread_rng().gen_range(1..=crate::SIDE_AMOUNT))));
+        }
+        target_pattern
     }
 
     //&self.shape_index
@@ -95,13 +110,15 @@ impl Game {
     }
 
     pub fn print_game_snippet(&mut self) {
+        let left_most_cube = self.get_shape(2).get_side().colour.clone();
         let left_cube = self.get_shape(1).get_side().colour.clone();
         let middle_cube = self.get_shape(0).get_side().colour.clone();
         let right_cube = self.get_shape(-1).get_side().colour.clone();
+        let right_most_cube = self.get_shape(-2).get_side().colour.clone();
 
         println!("       ____ ____ ____ ____ _____   ");
         println!("      /____/____/____/____/____/|     ",);
-        println!("/⎺⎺⎺⎺ | {left_cube:^2} | {middle_cube:^2} | {middle_cube:^2} | {middle_cube:^2} | {right_cube:^2} |/⎺⎺⎺⎺/");
+        println!("/⎺⎺⎺⎺ | {left_most_cube:^2} | {left_cube:^2} | {middle_cube:^2} | {right_cube:^2} | {right_most_cube:^2} |/⎺⎺⎺⎺/");
         println!("⎺⎺⎺⎺⎺ ⎺⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺ ⎺⎺⎺⎺⎺");
     }
 

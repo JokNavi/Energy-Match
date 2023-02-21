@@ -12,7 +12,7 @@ impl Shape {
     pub fn new(index: i32) -> Self {
         let rotations = rand::thread_rng().gen_range(1..=crate::SIDE_AMOUNT);
         let mut side_collection: HashMap<i32, Side> = HashMap::new();
-        side_collection.insert(rotations, Side::new(rotations));
+        side_collection.insert(rotations, Side::new(index, rotations));
         Shape {
             index,
             rotations,
@@ -24,7 +24,7 @@ impl Shape {
         if let std::collections::hash_map::Entry::Vacant(e) =
             self.side_collection.entry(self.rotations)
         {
-            e.insert(Side::new(self.rotations));
+            e.insert(Side::new(self.index, self.rotations));
             self.side_collection.get_mut(&self.rotations).unwrap()
         } else {
             self.side_collection.get_mut(&self.rotations).unwrap()

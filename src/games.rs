@@ -119,11 +119,11 @@ impl Game {
     }
 
     pub fn print_game_snippet(&mut self) {
-        let left_most_cube = self.get_shape(2).get_side().colour.clone();
-        let left_cube = self.get_shape(1).get_side().colour.clone();
-        let middle_cube = self.get_shape(0).get_side().colour.clone();
-        let right_cube = self.get_shape(-1).get_side().colour.clone();
-        let right_most_cube = self.get_shape(-2).get_side().colour.clone();
+        let left_most_cube = self.get_shape(2).get_side().display_value.clone();
+        let left_cube = self.get_shape(1).get_side().display_value.clone();
+        let middle_cube = self.get_shape(0).get_side().display_value.clone();
+        let right_cube = self.get_shape(-1).get_side().display_value.clone();
+        let right_most_cube = self.get_shape(-2).get_side().display_value.clone();
 
         println!("       ____ ____ ____ ____ _____   ");
         println!("      /____/____/____/____/____/|     ",);

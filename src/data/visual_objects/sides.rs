@@ -1,4 +1,4 @@
-use crate::data::colors::{ColoredText, color_selector};
+use crate::data::colors::{color_selector, ColoredText};
 
 pub struct Side {
     pub index: i32,
@@ -12,5 +12,4 @@ impl Side {
             display_value: ColoredText::new(color_selector(rotations), index.to_string()),
         }
     }
-
 }

@@ -1,5 +1,5 @@
+use colored::{Color, Colorize};
 use core::fmt;
-use colored::{Colorize, Color};
 
 pub struct ColoredText {
     color: colored::Color,
@@ -7,7 +7,7 @@ pub struct ColoredText {
 }
 
 impl ColoredText {
-    pub fn new(color: Color, text: String) -> Self{
+    pub fn new(color: Color, text: String) -> Self {
         ColoredText { color, text }
     }
 }

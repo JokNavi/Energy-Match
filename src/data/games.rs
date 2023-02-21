@@ -28,6 +28,7 @@ impl Game {
         }
     }
 
+    /* 
     pub fn print_target_pattern(target_pattern: &Vec<i32>){
         let mut display_pattern = Vec::<ColoredString>::new();
         for rotation in target_pattern{
@@ -43,6 +44,7 @@ impl Game {
         }
         target_pattern
     }
+    */
 
     //&self.shape_index
     pub fn get_shape(&mut self, index: i32) -> &mut Shape {

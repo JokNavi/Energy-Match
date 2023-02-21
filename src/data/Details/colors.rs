@@ -10,7 +10,6 @@ impl ColoredText {
     pub fn new(color: Color, text: String) -> Self {
         ColoredText { color, text }
     }
-
 }
 
 impl fmt::Display for ColoredText {
@@ -29,4 +28,3 @@ pub fn color_selector(code: i32) -> Color {
         _ => Color::White,
     }
 }
-

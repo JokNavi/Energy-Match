@@ -1,12 +1,11 @@
 use rand::Rng;
+use core::fmt;
 use std::ops::Range;
 
 use super::colors::{color_selector, ColoredText};
 
-pub type TargetPatternItem = (i32, ColoredText);
-
 pub struct TargetPattern {
-    pattern: Vec<TargetPatternItem>,
+    pattern: Vec<ColoredText>,
 }
 
 impl TargetPattern {
@@ -16,15 +15,25 @@ impl TargetPattern {
         }
     }
 
-    fn generate_target_pattern(range: Range<i32>) -> Vec<TargetPatternItem> {
-        let mut target_pattern: Vec<TargetPatternItem> = Vec::new();
-        for _ in range {
-            let value = rand::thread_rng().gen_range(1..=crate::SIDE_AMOUNT);
-            target_pattern.push((
-                value,
-                ColoredText::new(color_selector(value), value.to_string()),
-            ))
+    fn generate_target_pattern(range: Range<i32>) -> Vec<ColoredText> {
+        range
+            .into_iter()
+            .map(|_| {
+                ColoredText::new(
+                    color_selector(rand::thread_rng().gen_range(1..=crate::SIDE_AMOUNT)),
+                    "??".to_string(),
+                )
+            })
+            .collect()
+    }
+}
+
+impl fmt::Display for TargetPattern {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "[ ")?;
+        for text in &self.pattern{
+            write!(f, "{} ", text)?;
         }
-        return target_pattern;
+        write!(f, "]")
     }
 }

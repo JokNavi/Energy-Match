@@ -1,4 +1,4 @@
-pub trait CorrectIndex{
+pub trait CorrectIndex {
     fn correct_side_index(index: i32) -> i32 {
         match index {
             _ if index > crate::SIDE_AMOUNT => index % crate::SIDE_AMOUNT,
@@ -8,10 +8,10 @@ pub trait CorrectIndex{
         }
     }
 
-    fn check_row_index(index: i32) -> bool{
+    fn check_row_index(index: i32) -> bool {
         if crate::ALLOW_0_INDEX == false {
-             return index == 0; 
-            }
+            return index == 0;
+        }
         return true;
     }
 }

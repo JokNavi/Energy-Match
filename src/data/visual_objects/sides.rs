@@ -1,4 +1,5 @@
-use crate::data::Details::colors::{ColoredText, color_selector};
+use crate::data::Details::colors::ColoredText;
+use colored::Color;
 
 pub struct Side {
     pub index: i32,
@@ -6,10 +7,10 @@ pub struct Side {
 }
 
 impl Side {
-    pub fn new(index: i32, rotations: i32) -> Self {
+    pub fn new(index: i32, color: Color) -> Self {
         Side {
             index,
-            display_value: ColoredText::new(color_selector(rotations), index.to_string()),
+            display_value: ColoredText::new(color, index.to_string()),
         }
     }
 }

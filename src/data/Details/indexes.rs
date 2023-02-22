@@ -8,10 +8,4 @@ pub trait CorrectIndex {
         }
     }
 
-    fn check_row_index(index: i32) -> bool {
-        if crate::ALLOW_0_INDEX == false {
-            return index == 0;
-        }
-        return true;
-    }
 }

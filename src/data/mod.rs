@@ -1,2 +1,2 @@
-mod Details;
-mod visual_objects;
+pub mod visual_objects;
+pub mod details;

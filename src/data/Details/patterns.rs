@@ -1,7 +1,6 @@
 use rand::Rng;
 use core::fmt;
 use std::ops::Range;
-
 use super::colors::{color_selector, ColoredText};
 
 pub struct TargetPattern {
@@ -30,10 +29,10 @@ impl TargetPattern {
 
 impl fmt::Display for TargetPattern {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "[ ")?;
+        write!(f, "( ")?;
         for text in &self.pattern{
             write!(f, "{} ", text)?;
-        }
-        write!(f, "]")
+        };
+        write!(f, ")")
     }
 }

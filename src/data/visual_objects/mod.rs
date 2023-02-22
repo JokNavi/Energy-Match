@@ -1,3 +1,3 @@
-pub mod row;
-pub mod row_slice;
+pub mod rows;
+pub mod row_slices;
 pub mod sides;

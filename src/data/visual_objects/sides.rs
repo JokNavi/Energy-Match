@@ -1,4 +1,4 @@
-use crate::data::Details::colors::ColoredText;
+use crate::data::details::colors::ColoredText;
 use colored::Color;
 
 pub struct Side {

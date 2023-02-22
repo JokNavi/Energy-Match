@@ -10,6 +10,10 @@ impl ColoredText {
     pub fn new(color: Color, text: String) -> Self {
         ColoredText { color, text }
     }
+
+    pub fn colored_text(&self) -> ColoredString {
+        self.text.color(self.color)
+    }
 }
 
 impl fmt::Display for ColoredText {

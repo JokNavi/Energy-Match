@@ -1,5 +1,4 @@
 use core::fmt;
-
 use crate::data::details::colors::ColoredText;
 use colored::Color;
 
@@ -15,6 +14,11 @@ impl Side {
             display_value: ColoredText::new(color, index.to_string()),
         }
     }
+
+    pub fn display(&self) -> colored::ColoredString {
+        self.display_value.colored_text()
+    }
+    
 }
 
 impl fmt::Display for Side {

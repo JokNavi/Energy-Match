@@ -1,3 +1,5 @@
+use core::fmt;
+
 use crate::data::details::colors::ColoredText;
 use colored::Color;
 
@@ -12,5 +14,17 @@ impl Side {
             index,
             display_value: ColoredText::new(color, index.to_string()),
         }
+    }
+}
+
+impl fmt::Display for Side {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.display_value)
+    }
+}
+
+impl fmt::Debug for Side {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "(I: {}, V: {})", self.index, self.display_value)
     }
 }

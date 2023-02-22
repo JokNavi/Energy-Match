@@ -19,7 +19,8 @@ impl TargetPattern {
             .into_iter()
             .map(|_| {
                 ColoredText::new(
-                    color_selector(rand::thread_rng().gen_range(1..=crate::SIDE_AMOUNT)).expect("value range is accounted for"),
+                    color_selector(rand::thread_rng().gen_range(1..=crate::SIDE_AMOUNT))
+                        .expect("value range is accounted for"),
                     "??".to_string(),
                 )
             })

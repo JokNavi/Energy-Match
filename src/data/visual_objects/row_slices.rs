@@ -17,7 +17,10 @@ impl RowSlice {
         let mut side_collection: HashMap<i32, Side> = HashMap::new();
         side_collection.insert(
             rotations,
-            Side::new(selected_index, color_selector(rotations).expect("value range is accounted for")),
+            Side::new(
+                selected_index,
+                color_selector(rotations).expect("value range is accounted for. "),
+            ),
         );
         RowSlice {
             selected_index,
@@ -29,7 +32,10 @@ impl RowSlice {
     pub fn get_side(&mut self, rotations: i32) -> &mut Side {
         if let std::collections::hash_map::Entry::Vacant(e) = self.side_collection.entry(rotations)
         {
-            e.insert(Side::new(self.selected_index, color_selector(rotations).expect("value range is accounted for")));
+            e.insert(Side::new(
+                self.selected_index,
+                color_selector(rotations).expect("value range is accounted for. "),
+            ));
             self.side_collection
                 .get_mut(&rotations)
                 .expect("Just added the Side to the list. ")

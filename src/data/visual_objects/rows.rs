@@ -1,12 +1,6 @@
 use super::row_slices::RowSlice;
 use crate::data::details::indexes::CorrectIndex;
-use std::collections::{HashMap, HashSet};
-
-pub struct RowDisplay {
-    row: String,
-    center_index: i32,
-    width: i32,
-}
+use std::collections::HashMap;
 
 pub struct Row {
     pub selected_index: i32,
@@ -68,14 +62,14 @@ impl Row {
             Self::correct_side_index(self.get_current_row_slice().rotations - amount);
     }
 
-    pub fn swipe_left(&mut self, amount: i32){
+    pub fn swipe_left(&mut self, amount: i32) {
         let range = Self::get_range(self.selected_index, self.selected_index + amount);
         self.rotation_stack.retain(|i, _| range.contains(i));
         self.selected_index = self.selected_index + amount;
         self.get_current_row_slice().rotations = self.rotation_stack.values().sum();
     }
 
-    pub fn swipe_right(&mut self, amount: i32){
+    pub fn swipe_right(&mut self, amount: i32) {
         let range = Self::get_range(self.selected_index, self.selected_index - amount);
         self.rotation_stack.retain(|i, _| range.contains(i));
         self.selected_index = self.selected_index - amount;

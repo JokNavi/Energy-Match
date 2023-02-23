@@ -4,9 +4,9 @@ use crate::data::details::indexes::CorrectIndex;
 
 #[derive(Debug)]
 pub struct RowSlice {
-    pub rotations: i32,
-    pub index: i32,
-    pub display_value: ColoredString,
+    rotations: Vec<i32>,
+    index: i32,
+    display_value: ColoredString,
 }
 
 impl CorrectIndex for RowSlice {}
@@ -15,7 +15,7 @@ impl RowSlice {
     pub fn new(rotations: i32, index: i32) -> Self {
         let rotations = Self::correct_side_index(rotations);
         Self {
-            rotations,
+            rotations: vec![Self::correct_side_index(rotations)],
             index,
             display_value: Self::create_side_color(index, rotations),
         }
@@ -31,16 +31,20 @@ impl RowSlice {
         }
     }
 
-    pub fn set_rotation(&mut self, rotations: i32) {
-        let rotations = Self::correct_side_index(rotations);
-        self.rotations = rotations;
-        self.display_value = Self::create_side_color(self.index, self.rotations);
+    pub fn set_rotation(&mut self, new_rotation: i32){
+        let rotations = Self::correct_side_index(new_rotation);
+        self.rotations.push(rotations);
+        self.display_value = Self::create_side_color(self.index, self.rotations());   
+    }
+
+    fn rotations(&self) -> i32 {
+        self.rotations.iter().sum()
     }
 }
 
 impl PartialEq for RowSlice {
     fn eq(&self, other: &Self) -> bool {
-        self.rotations == other.rotations && self.index == other.index
+        self.rotations() == other.rotations() && self.index == other.index
     }
 }
 

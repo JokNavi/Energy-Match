@@ -14,8 +14,9 @@ impl CorrectIndex for RowSlice {}
 
 impl RowSlice {
     pub fn new(rotations: i32, index: i32) -> Self {
+        let rotations = Self::correct_side_index(rotations);
         Self {
-            rotations: Self::correct_side_index(rotations),
+            rotations,
             index,
             display_value: Self::create_side_color(index, rotations),
         }
@@ -36,12 +37,11 @@ impl RowSlice {
         }
     }
 
-    pub fn set_rotation(&mut self, rotations: i32){
+    pub fn set_rotation(&mut self, rotations: i32) {
         let rotations = Self::correct_side_index(rotations);
         self.rotations = rotations;
-        self.display_value = Self::create_side_color(self.index, self.rotations);   
+        self.display_value = Self::create_side_color(self.index, self.rotations);
     }
-
 }
 
 impl PartialEq for RowSlice {
@@ -49,7 +49,6 @@ impl PartialEq for RowSlice {
         self.rotations == other.rotations && self.index == other.index
     }
 }
-
 
 #[cfg(test)]
 pub mod row_slice_tests {
@@ -80,9 +79,18 @@ pub mod row_slice_tests {
         assert_eq!(
             RowSlice::new(5, 0),
             RowSlice {
-                rotations: 4,
+                rotations: 1,
                 index: 0,
-                display_value: RowSlice::create_side_color(4, 0),
+                display_value: RowSlice::create_side_color(1, 0),
+            }
+        );
+
+        assert_eq!(
+            RowSlice::new(0, 0),
+            RowSlice {
+                rotations: 1,
+                index: 0,
+                display_value: RowSlice::create_side_color(1, 0),
             }
         );
     }
@@ -90,10 +98,12 @@ pub mod row_slice_tests {
     #[test]
     fn create_side_color() {
         assert_eq!(RowSlice::create_side_color(3, 0), 0.to_string().blue());
+        assert_eq!(RowSlice::create_side_color(5, 0), 0.to_string().normal());
+        assert_eq!(RowSlice::create_side_color(0, 0), 0.to_string().normal());
     }
 
     #[test]
-    fn set_rotation(){
+    fn set_rotation() {
         let mut row_slice = RowSlice::new(1, 0);
         row_slice.set_rotation(2);
         assert_eq!(row_slice, RowSlice::new(2, 0));

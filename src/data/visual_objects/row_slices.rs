@@ -67,10 +67,39 @@ pub mod row_slice_tests {
                 display_value: RowSlice::create_side_color(3, 0),
             }
         );
+
+        assert_eq!(
+            RowSlice::new(-2, 0),
+            RowSlice {
+                rotations: 2,
+                index: 0,
+                display_value: RowSlice::create_side_color(2, 0),
+            }
+        );
+
+        assert_eq!(
+            RowSlice::new(5, 0),
+            RowSlice {
+                rotations: 4,
+                index: 0,
+                display_value: RowSlice::create_side_color(4, 0),
+            }
+        );
     }
 
     #[test]
     fn create_side_color() {
         assert_eq!(RowSlice::create_side_color(3, 0), 0.to_string().blue());
+    }
+
+    #[test]
+    fn set_rotation(){
+        let mut row_slice = RowSlice::new(1, 0);
+        row_slice.set_rotation(2);
+        assert_eq!(row_slice, RowSlice::new(2, 0));
+
+        row_slice = RowSlice::new(1, 0);
+        row_slice.set_rotation(5);
+        assert_eq!(row_slice, RowSlice::new(1, 0));
     }
 }

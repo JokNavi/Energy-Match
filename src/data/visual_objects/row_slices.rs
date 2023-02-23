@@ -30,7 +30,7 @@ impl RowSlice {
         }
     }
 
-    pub fn set_rotation(&mut self, new_rotation: i32){
+    pub fn add_rotation(&mut self, new_rotation: i32){
         let rotations = Self::correct_side_index(new_rotation);
         self.rotations.push(rotations);
         self.display_value = Self::create_side_color(self.index, self.rotations());   
@@ -60,9 +60,36 @@ pub mod row_slice_tests {
         assert_eq!(
             RowSlice::new(3, 0),
             RowSlice {
-                rotations: 3,
+                rotations: vec![3],
                 index: 0,
                 display_value: RowSlice::create_side_color(3, 0),
+            }
+        );
+
+        assert_eq!(
+            RowSlice::new(-2, 0),
+            RowSlice {
+                rotations: vec![2],
+                index: 0,
+                display_value: RowSlice::create_side_color(2, 0),
+            }
+        );
+
+        assert_eq!(
+            RowSlice::new(5, 0),
+            RowSlice {
+                rotations: vec![1],
+                index: 0,
+                display_value: RowSlice::create_side_color(1, 0),
+            }
+        );
+
+        assert_eq!(
+            RowSlice::new(0, 0),
+            RowSlice {
+                rotations: vec![crate::SIDE_AMOUNT],
+                index: 0,
+                display_value: RowSlice::create_side_color(crate::SIDE_AMOUNT, 0),
             }
         );
     }
@@ -70,5 +97,18 @@ pub mod row_slice_tests {
     #[test]
     fn create_side_color() {
         assert_eq!(RowSlice::create_side_color(3, 0), 0.to_string().blue());
+        assert_eq!(RowSlice::create_side_color(5, 0), 0.to_string().normal());
+        assert_eq!(RowSlice::create_side_color(0, 0), 0.to_string().normal());
+    }
+
+    #[test]
+    fn set_rotation() {
+        let mut row_slice = RowSlice::new(1, 0);
+        row_slice.add_rotation(2);
+        assert_eq!(row_slice, RowSlice::new(2, 0));
+
+        row_slice = RowSlice::new(1, 0);
+        row_slice.add_rotation(5);
+        assert_eq!(row_slice, RowSlice::new(1, 0));
     }
 }

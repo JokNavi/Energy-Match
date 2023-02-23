@@ -1,11 +1,10 @@
 use colored::{Color, ColoredString, Colorize};
-use rand::Rng;
 
 use crate::data::details::indexes::CorrectIndex;
 
 #[derive(Debug)]
 pub struct RowSlice {
-    rotations: i32,
+    rotations: Vec<i32>,
     index: i32,
     display_value: ColoredString,
 }
@@ -15,15 +14,10 @@ impl CorrectIndex for RowSlice {}
 impl RowSlice {
     pub fn new(rotations: i32, index: i32) -> Self {
         Self {
-            rotations: Self::correct_side_index(rotations),
+            rotations: vec![Self::correct_side_index(rotations)],
             index,
             display_value: Self::create_side_color(index, rotations),
         }
-    }
-
-    pub fn new_rand(index: i32) -> Self {
-        let rotations = rand::thread_rng().gen_range(1..=crate::SIDE_AMOUNT);
-        Self::new(rotations, index)
     }
 
     fn create_side_color(rotations: i32, index: i32) -> ColoredString {
@@ -36,10 +30,14 @@ impl RowSlice {
         }
     }
 
-    pub fn set_rotation(&mut self, rotations: i32){
-        let rotations = Self::correct_side_index(rotations);
-        self.rotations = rotations;
-        self.display_value = Self::create_side_color(self.index, self.rotations);   
+    pub fn set_rotation(&mut self, new_rotation: i32){
+        let rotations = Self::correct_side_index(new_rotation);
+        self.rotations.push(rotations);
+        self.display_value = Self::create_side_color(self.index, self.rotations());   
+    }
+
+    fn rotations(&self) -> i32 {
+        self.rotations.iter().sum()
     }
 
 }

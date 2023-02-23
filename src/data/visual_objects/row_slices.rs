@@ -50,6 +50,8 @@ impl PartialEq for RowSlice {
 pub mod row_slice_tests {
     use colored::Colorize;
 
+    use crate::data::details::indexes::CorrectIndex;
+
     use super::RowSlice;
 
     #[test]
@@ -57,59 +59,33 @@ pub mod row_slice_tests {
         assert_eq!(
             RowSlice::new(3, 0),
             RowSlice {
-                rotations: vec![3],
+                rotations: vec![RowSlice::adjust_rotation(3)],
                 index: 0,
                 display_value: RowSlice::create_side_color(3, 0),
-            }
-        );
-
-        assert_eq!(
-            RowSlice::new(-2, 0),
-            RowSlice {
-                rotations: vec![2],
-                index: 0,
-                display_value: RowSlice::create_side_color(2, 0),
-            }
-        );
-
-        assert_eq!(
-            RowSlice::new(5, 0),
-            RowSlice {
-                rotations: vec![1],
-                index: 0,
-                display_value: RowSlice::create_side_color(1, 0),
-            }
-        );
-
-        assert_eq!(
-            RowSlice::new(0, 0),
-            RowSlice {
-                rotations: vec![0],
-                index: 0,
-                display_value: RowSlice::create_side_color(0, 0),
             }
         );
     }
 
     #[test]
     fn create_side_color() {
-        assert_eq!(RowSlice::create_side_color(3, 0), 0.to_string().blue());
-        assert_eq!(RowSlice::create_side_color(5, 0), 0.to_string().normal());
-        assert_eq!(RowSlice::create_side_color(0, 0), 0.to_string().normal());
+        assert_eq!(RowSlice::create_side_color(0, 0), 0.to_string().red());
+        assert_eq!(RowSlice::create_side_color(3, 0), 0.to_string().yellow());
+        assert_eq!(RowSlice::create_side_color(-1, 0), 0.to_string().normal());
+        assert_eq!(RowSlice::create_side_color(4, 0), 0.to_string().normal());
     }
 
     #[test]
     fn set_rotation() {
-        let mut row_slice = RowSlice::new(1, 0);
+        let mut row_slice = RowSlice::new(0, 0);
         row_slice.add_rotation(2);
-        assert_eq!(row_slice, RowSlice::new(3, 0));
-
-        row_slice = RowSlice::new(1, 0);
-        row_slice.add_rotation(5);
         assert_eq!(row_slice, RowSlice::new(2, 0));
 
-        row_slice = RowSlice::new(0, 0);
-        row_slice.add_rotation(-1);
-        assert_eq!(row_slice, RowSlice::new(3, 0));
+        row_slice = RowSlice::new(1, 0);
+        row_slice.add_rotation(3);
+        assert_eq!(row_slice, RowSlice::new(0, 0));
+
+        row_slice = RowSlice::new(-1, 0);
+        row_slice.add_rotation(1);
+        assert_eq!(row_slice, RowSlice::new(0, 0));
     }
 }

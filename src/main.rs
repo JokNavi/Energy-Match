@@ -20,4 +20,8 @@ fn main() {
         );
     }
     */
+
+    struct TestStruct();
+    impl CorrectIndex for TestStruct {}
+    println!("{}", TestStruct::adjust_rotation(4));
 }

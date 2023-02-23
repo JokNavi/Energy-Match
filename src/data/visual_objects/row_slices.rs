@@ -31,13 +31,12 @@ impl RowSlice {
     }
 
     pub fn add_rotation(&mut self, new_rotation: i32){
-        let rotations = Self::correct_side_index(new_rotation);
-        self.rotations.push(rotations);
+        self.rotations.push(new_rotation);
         self.display_value = Self::create_side_color(self.index, self.rotations());   
     }
 
     fn rotations(&self) -> i32 {
-        self.rotations.iter().sum()
+        Self::correct_side_index(self.rotations.iter().sum())
     }
 
 }
@@ -105,10 +104,14 @@ pub mod row_slice_tests {
     fn set_rotation() {
         let mut row_slice = RowSlice::new(1, 0);
         row_slice.add_rotation(2);
-        assert_eq!(row_slice, RowSlice::new(2, 0));
+        assert_eq!(row_slice, RowSlice::new(3, 0));
 
         row_slice = RowSlice::new(1, 0);
         row_slice.add_rotation(5);
-        assert_eq!(row_slice, RowSlice::new(1, 0));
+        assert_eq!(row_slice, RowSlice::new(2, 0));
+
+        row_slice = RowSlice::new(0, 0);
+        row_slice.add_rotation(-1);
+        assert_eq!(row_slice, RowSlice::new(3, 0));
     }
 }

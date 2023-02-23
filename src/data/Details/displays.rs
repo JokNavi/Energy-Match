@@ -14,8 +14,6 @@ use super::{colors::ColoredText, indexes::CorrectIndex};
 type RowSliceDisplay = (Vec<String>, Vec<String>, Vec<String>, Vec<String>);
 
 pub struct RowDisplay {
-    center_index: i32,
-    width: i32,
     layers: RowSliceDisplay,
 }
 
@@ -29,11 +27,7 @@ impl RowDisplay {
             );
         }
         layers = Self::push_postfix(layers);
-        Self {
-            center_index,
-            width,
-            layers,
-        }
+        Self {layers}
     }
 
     fn push_prefix(mut row_slice_display: RowSliceDisplay) -> RowSliceDisplay {
@@ -63,7 +57,7 @@ impl RowDisplay {
 
 impl fmt::Display for RowDisplay {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        writeln!(f, "\n{}", self.layers.0.join(""))?;
+        writeln!(f, "{}", self.layers.0.join(""))?;
         writeln!(f, "{}", self.layers.1.join(""))?;
         writeln!(f, "{}", self.layers.2.join(""))?;
         writeln!(f, "{}", self.layers.3.join(""))

@@ -65,6 +65,7 @@ impl Row {
     pub fn swipe_left(&mut self, amount: i32) {
         let range = Self::get_range(self.selected_index, self.selected_index + amount);
         self.rotation_stack.retain(|i, _| range.contains(i));
+        println!("self.selected_index: {}, self.selected_index + amount: {}", self.selected_index, self.selected_index + amount);
         self.selected_index = self.selected_index + amount;
         self.get_current_row_slice().rotations = self.rotation_stack.values().sum();
     }

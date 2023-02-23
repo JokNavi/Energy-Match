@@ -32,3 +32,8 @@ pub fn color_selector(code: i32) -> Result<Color, String> {
         _ => Err("Unknown color selector code".to_string()),
     }
 }
+
+#[cfg(test)]
+pub mod colored_text_tests {
+
+}

@@ -30,6 +30,7 @@ impl RowSlice {
     }
 
     pub fn get_side(&mut self, rotations: i32) -> &mut Side {
+        println!("rotations: {rotations}");
         if let std::collections::hash_map::Entry::Vacant(e) = self.side_collection.entry(rotations)
         {
             e.insert(Side::new(

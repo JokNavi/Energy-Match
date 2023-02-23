@@ -1,0 +1,26 @@
+Slide game:
+
+you are presented with a cube with many possible block states.
+you can interact with the cube in 4 major ways.
+
+swipe up: rotates up 90° to the previous block state
+swipe down: rotates down 90° to the next block state
+tap left: rotates left 90° degrees and zooms in on the smaller cube to the left of the current cube. 
+tap right: rotates right 90° degrees and zooms in on the smaller cube to the right of the current cube.
+
+there would be one main cube with an infinite/long row of cube to the left and a row to the right.
+
+All other cubes would decrease in size the further you go in the opposite direction of the main cube.
+
+if you swipe up or down on a cube, all cubes smaller then it will have the same rotation.
+
+
+Your goal could be to match a certain colour combination in as least tries as possible.
+
+
+
+testing:
+local rotation = 2
+cube_list = [rotations: 2, rotations: 2, rotations: 1, rotations: 1]
+[2, 2, 1, 1]
+

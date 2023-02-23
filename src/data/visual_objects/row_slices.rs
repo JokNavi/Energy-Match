@@ -4,7 +4,7 @@ use crate::data::details::indexes::CorrectIndex;
 
 #[derive(Debug)]
 pub struct RowSlice {
-    rotations: Vec<i32>,
+    pub rotations: Vec<i32>,
     index: i32,
     display_value: ColoredString,
 }
@@ -14,7 +14,7 @@ impl CorrectIndex for RowSlice {}
 impl RowSlice {
     pub fn new(rotations: i32, index: i32) -> Self {
         Self {
-            rotations: vec![Self::correct_side_index(rotations)],
+            rotations: vec![Self::adjust_rotation(rotations)],
             index,
             display_value: Self::create_side_color(index, rotations),
         }
@@ -30,15 +30,14 @@ impl RowSlice {
         }
     }
 
-    pub fn add_rotation(&mut self, new_rotation: i32){
+    pub fn add_rotation(&mut self, new_rotation: i32) {
         self.rotations.push(new_rotation);
-        self.display_value = Self::create_side_color(self.index, self.rotations());   
+        self.display_value = Self::create_side_color(self.index, self.rotations());
     }
 
-    fn rotations(&self) -> i32 {
-        Self::correct_side_index(self.rotations.iter().sum())
+    pub fn rotations(&self) -> i32 {
+        Self::adjust_rotation(self.rotations.iter().sum())
     }
-
 }
 
 impl PartialEq for RowSlice {
@@ -46,7 +45,6 @@ impl PartialEq for RowSlice {
         self.rotations() == other.rotations() && self.index == other.index
     }
 }
-
 
 #[cfg(test)]
 pub mod row_slice_tests {
@@ -86,9 +84,9 @@ pub mod row_slice_tests {
         assert_eq!(
             RowSlice::new(0, 0),
             RowSlice {
-                rotations: vec![crate::SIDE_AMOUNT],
+                rotations: vec![0],
                 index: 0,
-                display_value: RowSlice::create_side_color(crate::SIDE_AMOUNT, 0),
+                display_value: RowSlice::create_side_color(0, 0),
             }
         );
     }

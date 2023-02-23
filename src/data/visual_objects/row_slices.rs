@@ -1,5 +1,4 @@
 use colored::{Color, ColoredString, Colorize};
-use rand::Rng;
 
 use crate::data::details::indexes::CorrectIndex;
 
@@ -20,11 +19,6 @@ impl RowSlice {
             index,
             display_value: Self::create_side_color(index, rotations),
         }
-    }
-
-    pub fn new_rand(index: i32) -> Self {
-        let rotations = rand::thread_rng().gen_range(1..=crate::SIDE_AMOUNT);
-        Self::new(rotations, index)
     }
 
     fn create_side_color(rotations: i32, index: i32) -> ColoredString {

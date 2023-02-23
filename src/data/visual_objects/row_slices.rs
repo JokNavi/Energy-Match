@@ -61,4 +61,9 @@ pub mod row_slice_tests {
             }
         );
     }
+
+    #[test]
+    fn create_side_color() {
+        assert_eq!(RowSlice::create_side_color(3, 0), 0.to_string().blue());
+    }
 }

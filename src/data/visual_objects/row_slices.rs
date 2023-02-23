@@ -35,6 +35,13 @@ impl RowSlice {
             _ => index.to_string().normal(),
         }
     }
+
+    pub fn set_rotation(&mut self, rotations: i32){
+        let rotations = Self::correct_side_index(rotations);
+        self.rotations = rotations;
+        self.display_value = Self::create_side_color(self.index, self.rotations);   
+    }
+
 }
 
 impl PartialEq for RowSlice {
@@ -46,7 +53,7 @@ impl PartialEq for RowSlice {
 
 #[cfg(test)]
 pub mod row_slice_tests {
-    use colored::{Color, Colorize};
+    use colored::Colorize;
 
     use super::RowSlice;
 

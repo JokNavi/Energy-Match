@@ -1,53 +1,44 @@
-use super::sides::Side;
-use crate::data::details::{colors::color_selector, indexes::CorrectIndex};
+use colored::{Color, ColoredString, Colorize};
 use rand::Rng;
-use std::collections::HashMap;
 
+use crate::data::details::indexes::CorrectIndex;
+
+#[derive(Debug)]
 pub struct RowSlice {
-    pub selected_index: i32,
-    pub rotations: i32,
-    pub side_collection: HashMap<i32, Side>,
+    rotations: i32,
+    index: i32,
+    display_value: ColoredString,
 }
 
 impl CorrectIndex for RowSlice {}
 
 impl RowSlice {
-    pub fn new(selected_index: i32) -> Self {
+    pub fn new(rotations: i32, index: i32) -> Self {
+        Self {
+            rotations: Self::correct_side_index(rotations),
+            index,
+            display_value: Self::create_side_color(index, rotations),
+        }
+    }
+
+    pub fn new_rand(index: i32) -> Self {
         let rotations = rand::thread_rng().gen_range(1..=crate::SIDE_AMOUNT);
-        let mut side_collection: HashMap<i32, Side> = HashMap::new();
-        side_collection.insert(
-            rotations,
-            Side::new(
-                selected_index,
-                color_selector(rotations).expect("value range is accounted for. "),
-            ),
-        );
-        RowSlice {
-            selected_index,
-            rotations,
-            side_collection,
-        }
+        Self::new(rotations, index)
     }
 
-    pub fn get_side(&mut self, rotations: i32) -> &mut Side {
-        println!("rotations: {rotations}");
-        if let std::collections::hash_map::Entry::Vacant(e) = self.side_collection.entry(rotations)
-        {
-            e.insert(Side::new(
-                self.selected_index,
-                color_selector(rotations).expect("value range is accounted for. "),
-            ));
-            self.side_collection
-                .get_mut(&rotations)
-                .expect("Just added the Side to the list. ")
-        } else {
-            self.side_collection
-                .get_mut(&rotations)
-                .expect("Just checked the Side object exists in the list. ")
+    fn create_side_color(rotations: i32, index: i32) -> ColoredString {
+        match rotations {
+            1 => index.to_string().color(Color::Red),
+            2 => index.to_string().color(Color::Green),
+            3 => index.to_string().color(Color::Blue),
+            4 => index.to_string().color(Color::Yellow),
+            _ => index.to_string().normal(),
         }
     }
+}
 
-    pub fn get_current_side(&mut self) -> &mut Side {
-        self.get_side(self.rotations)
+impl PartialEq for RowSlice {
+    fn eq(&self, other: &Self) -> bool {
+        self.rotations == other.rotations && self.index == other.index
     }
 }

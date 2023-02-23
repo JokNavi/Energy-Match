@@ -44,7 +44,7 @@ impl RowSlice {
 
 impl PartialEq for RowSlice {
     fn eq(&self, other: &Self) -> bool {
-        self.rotations == other.rotations && self.index == other.index
+        self.rotations() == other.rotations() && self.index == other.index
     }
 }
 

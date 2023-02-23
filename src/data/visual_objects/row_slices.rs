@@ -42,3 +42,23 @@ impl PartialEq for RowSlice {
         self.rotations == other.rotations && self.index == other.index
     }
 }
+
+
+#[cfg(test)]
+pub mod row_slice_tests {
+    use colored::{Color, Colorize};
+
+    use super::RowSlice;
+
+    #[test]
+    fn new() {
+        assert_eq!(
+            RowSlice::new(3, 0),
+            RowSlice {
+                rotations: 3,
+                index: 0,
+                display_value: RowSlice::create_side_color(3, 0),
+            }
+        );
+    }
+}

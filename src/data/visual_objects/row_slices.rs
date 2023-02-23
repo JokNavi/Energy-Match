@@ -5,9 +5,9 @@ use crate::data::details::indexes::CorrectIndex;
 
 #[derive(Debug)]
 pub struct RowSlice {
-    rotations: i32,
-    index: i32,
-    display_value: ColoredString,
+    pub rotations: i32,
+    pub index: i32,
+    pub display_value: ColoredString,
 }
 
 impl CorrectIndex for RowSlice {}

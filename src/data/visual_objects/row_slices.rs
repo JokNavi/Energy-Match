@@ -22,16 +22,16 @@ impl RowSlice {
 
     fn create_side_color(rotations: i32, index: i32) -> ColoredString {
         match rotations {
-            1 => index.to_string().color(Color::Red),
-            2 => index.to_string().color(Color::Green),
-            3 => index.to_string().color(Color::Blue),
-            4 => index.to_string().color(Color::Yellow),
+            0 => index.to_string().color(Color::Red),
+            1 => index.to_string().color(Color::Green),
+            2 => index.to_string().color(Color::Blue),
+            3 => index.to_string().color(Color::Yellow),
             _ => index.to_string().normal(),
         }
     }
 
     pub fn add_rotation(&mut self, new_rotation: i32) {
-        self.rotations.push(new_rotation);
+        self.rotations.push(Self::adjust_rotation(new_rotation));
         self.display_value = Self::create_side_color(self.index, self.rotations());
     }
 

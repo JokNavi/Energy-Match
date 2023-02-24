@@ -1,9 +1,11 @@
+use crate::data::game_logic::games::SIDE_AMOUNT;
+
 pub trait CorrectIndex {
     fn adjust_rotation(rotation: i32) -> i32 {
         if rotation >= 0 {
-            return rotation.abs() % crate::SIDE_AMOUNT;
+            return rotation.abs() % SIDE_AMOUNT;
         }
-        (crate::SIDE_AMOUNT - (rotation.abs() % crate::SIDE_AMOUNT) ) % crate::SIDE_AMOUNT
+        (SIDE_AMOUNT - (rotation.abs() % SIDE_AMOUNT) ) % SIDE_AMOUNT
     }
 }
 

@@ -4,7 +4,7 @@ use crate::data::details::indexes::CorrectIndex;
 
 #[derive(Debug)]
 pub struct RowSlice {
-    rotations: i32,
+    pub rotations: i32,
     index: i32,
     display_value: ColoredString,
 }
@@ -30,11 +30,15 @@ impl RowSlice {
         }
     }
 
-    pub fn add_rotation(&mut self, new_rotation: i32) {
-        self.rotations = Self::adjust_rotation(self.rotations + new_rotation);
+    pub fn add_rotation(&mut self, amount: i32) {
+        self.rotations = self.rotations + Self::adjust_rotation(amount.abs());
         self.display_value = Self::create_side_color(self.index, self.rotations);
     }
 
+    pub fn remove_rotation(&mut self, amount: i32) {
+        self.rotations = self.rotations - Self::adjust_rotation(amount.abs());
+        self.display_value = Self::create_side_color(self.index, self.rotations);
+    }
 }
 
 impl PartialEq for RowSlice {
@@ -76,7 +80,7 @@ pub mod row_slice_tests {
 
         row_slice = RowSlice::new(1, 0);
         row_slice.add_rotation(3);
-        assert_eq!(row_slice.rotations, 4);
+        assert_eq!(row_slice.rotations, 0);
 
         row_slice = RowSlice::new(-1, 0);
         row_slice.add_rotation(1);

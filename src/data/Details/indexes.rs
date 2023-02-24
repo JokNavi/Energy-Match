@@ -31,6 +31,7 @@ pub mod correct_index_tests {
         assert_eq!(TestCorrectIndex::adjust_rotation(0), 0);
         assert_eq!(TestCorrectIndex::adjust_rotation(-3), 3);
         assert_eq!(TestCorrectIndex::adjust_rotation(-8), 0);
+        assert_eq!(TestCorrectIndex::adjust_rotation(-8), 0);
     }
 
     #[test]

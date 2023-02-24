@@ -4,7 +4,7 @@ use crate::data::details::indexes::CorrectIndex;
 
 #[derive(Debug)]
 pub struct RowSlice {
-    pub rotations: i32,
+    rotations: i32,
     index: i32,
     display_value: ColoredString,
 }
@@ -34,11 +34,11 @@ impl RowSlice {
         Self::adjust_rotation(self.rotations)
     }
 
-    pub fn add_rotation(&mut self, amount: i32) {
+    pub fn append_rotation(&mut self, amount: i32) {
         self.rotations += amount;
-        self.display_value = Self::create_side_color(self.index, Self::adjust_rotation(self.rotations));
+        self.display_value =
+            Self::create_side_color(self.index, Self::adjust_rotation(self.rotations));
     }
-
 }
 
 impl PartialEq for RowSlice {
@@ -48,9 +48,9 @@ impl PartialEq for RowSlice {
 }
 
 #[cfg(test)]
-pub mod row_slice_tests {
-    use colored::Colorize;
+mod row_slice_tests {
     use super::RowSlice;
+    use colored::Colorize;
 
     #[test]
     fn new() {
@@ -73,22 +73,22 @@ pub mod row_slice_tests {
     }
 
     #[test]
-    fn add_rotation() {
+    fn append_rotation() {
         let mut row_slice = RowSlice::new(0, 0);
-        row_slice.add_rotation(2);
+        row_slice.append_rotation(2);
         assert_eq!(row_slice.rotations(), 2);
 
         row_slice = RowSlice::new(1, 0);
-        row_slice.add_rotation(3);
+        row_slice.append_rotation(3);
         assert_eq!(row_slice.rotations(), 0);
 
         row_slice = RowSlice::new(0, 0);
-        row_slice.add_rotation(5);
+        row_slice.append_rotation(5);
         assert_eq!(row_slice.rotations(), 1);
     }
 
     #[test]
-    fn rotations(){
+    fn rotations() {
         let mut row_slice = RowSlice::new(0, 0);
         assert_eq!(row_slice.rotations(), 0);
 
@@ -98,5 +98,4 @@ pub mod row_slice_tests {
         row_slice = RowSlice::new(0, 0);
         assert_eq!(row_slice.rotations(), 0);
     }
-
 }

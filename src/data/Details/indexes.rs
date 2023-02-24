@@ -1,11 +1,9 @@
-
 pub trait CorrectIndex {
     fn adjust_rotation(rotation: i32) -> i32 {
         if rotation >= 0 {
             return rotation.abs() % crate::SIDE_AMOUNT;
         }
-        return (crate::SIDE_AMOUNT - (rotation.abs() % crate::SIDE_AMOUNT) + 0) % crate::SIDE_AMOUNT;
-        
+        (crate::SIDE_AMOUNT - (rotation.abs() % crate::SIDE_AMOUNT) ) % crate::SIDE_AMOUNT
     }
 }
 
@@ -20,7 +18,7 @@ pub trait CorrectRanges {
 }
 
 #[cfg(test)]
-pub mod correct_index_tests {
+mod correct_index_tests {
     use super::{CorrectIndex, CorrectRanges};
     struct TestCorrectIndex;
     impl CorrectIndex for TestCorrectIndex {}

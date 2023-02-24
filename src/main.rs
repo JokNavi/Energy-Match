@@ -22,6 +22,6 @@ fn main() {
     impl CorrectRanges for TestCorrectRanges{}
 
     println!("{:?}", TestCorrectRanges::get_range(-10, 10))
-    
+
     */
 }

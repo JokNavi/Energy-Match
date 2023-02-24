@@ -11,7 +11,7 @@ pub struct Row {
 
 //rand::thread_rng().gen_range(1..=crate::SIDE_AMOUNT);
 
-
+/* 
 impl Row {
     pub fn new() -> Self {
         let mut row_slice = RowSlice::new(rand::thread_rng().gen_range(1..=crate::SIDE_AMOUNT), 0);
@@ -21,4 +21,4 @@ impl Row {
         }
     }
 }
-
+*/

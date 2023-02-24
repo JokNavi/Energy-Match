@@ -4,7 +4,7 @@ use crate::data::details::indexes::CorrectIndex;
 
 #[derive(Debug)]
 pub struct RowSlice {
-    pub rotations: Vec<i32>,
+    rotations: Vec<i32>,
     index: i32,
     display_value: ColoredString,
 }
@@ -12,11 +12,11 @@ pub struct RowSlice {
 impl CorrectIndex for RowSlice {}
 
 impl RowSlice {
-    pub fn new(rotations: i32, index: i32) -> Self {
+    pub fn new(rotation: i32, index: i32) -> Self {
         Self {
-            rotations: vec![Self::adjust_rotation(rotations)],
+            rotations: vec![rotation],
             index,
-            display_value: Self::create_side_color(index, rotations),
+            display_value: Self::create_side_color(index, rotation),
         }
     }
 
@@ -31,12 +31,12 @@ impl RowSlice {
     }
 
     pub fn add_rotation(&mut self, new_rotation: i32) {
-        self.rotations.push(Self::adjust_rotation(new_rotation));
+        self.rotations.push(new_rotation);
         self.display_value = Self::create_side_color(self.index, self.rotations());
     }
 
     pub fn rotations(&self) -> i32 {
-        Self::adjust_rotation(self.rotations.iter().sum())
+        Self::adjust_rotation(self.rotations.iter().sum::<i32>()) 
     }
 }
 
@@ -59,7 +59,7 @@ pub mod row_slice_tests {
         assert_eq!(
             RowSlice::new(3, 0),
             RowSlice {
-                rotations: vec![RowSlice::adjust_rotation(3)],
+                added_rotations: vec![RowSlice::adjust_rotation(3)],
                 index: 0,
                 display_value: RowSlice::create_side_color(3, 0),
             }
@@ -75,7 +75,7 @@ pub mod row_slice_tests {
     }
 
     #[test]
-    fn set_rotation() {
+    fn add_rotation() {
         let mut row_slice = RowSlice::new(0, 0);
         row_slice.add_rotation(2);
         assert_eq!(row_slice, RowSlice::new(2, 0));
@@ -87,5 +87,10 @@ pub mod row_slice_tests {
         row_slice = RowSlice::new(-1, 0);
         row_slice.add_rotation(1);
         assert_eq!(row_slice, RowSlice::new(0, 0));
+    }
+
+    #[test]
+    fn rotation(){
+
     }
 }

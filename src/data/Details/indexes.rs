@@ -1,11 +1,9 @@
 pub trait CorrectIndex {
-    fn correct_side_index(index: i32) -> i32 {
-        let index = index.abs();
-        match index {
-            0 => crate::SIDE_AMOUNT,
-            _ if index > crate::SIDE_AMOUNT => index % crate::SIDE_AMOUNT,
-            _ => index,
+    fn adjust_rotation(rotation: i32) -> i32 {
+        if rotation >= 0 {
+            return rotation.abs() % crate::SIDE_AMOUNT;
         }
+        (crate::SIDE_AMOUNT - (rotation.abs() % crate::SIDE_AMOUNT) ) % crate::SIDE_AMOUNT
     }
 }
 
@@ -20,7 +18,7 @@ pub trait CorrectRanges {
 }
 
 #[cfg(test)]
-pub mod correct_index_tests {
+mod correct_index_tests {
     use super::{CorrectIndex, CorrectRanges};
     struct TestCorrectIndex;
     impl CorrectIndex for TestCorrectIndex {}
@@ -29,9 +27,12 @@ pub mod correct_index_tests {
 
     #[test]
     fn correct_side_index() {
-        assert_eq!(TestCorrectIndex::correct_side_index(0), crate::SIDE_AMOUNT);
-        assert_eq!(TestCorrectIndex::correct_side_index(-3), 3);
-        assert_eq!(TestCorrectIndex::correct_side_index(-8), 0);
+        assert_eq!(TestCorrectIndex::adjust_rotation(2), 2);
+        assert_eq!(TestCorrectIndex::adjust_rotation(0), 0);
+        assert_eq!(TestCorrectIndex::adjust_rotation(-3), 1);
+        assert_eq!(TestCorrectIndex::adjust_rotation(-8), 0);
+        assert_eq!(TestCorrectIndex::adjust_rotation(-4), 0);
+        assert_eq!(TestCorrectIndex::adjust_rotation(-0), 0);
     }
 
     #[test]

@@ -20,7 +20,13 @@ Your goal could be to match a certain colour combination in as least tries as po
 
 
 testing:
-local rotation = 2
-cube_list = [rotations: 2, rotations: 2, rotations: 1, rotations: 1]
-[2, 2, 1, 1]
+local rotation = [1, -1]
+cube_list = [rotations: 2+-1+local_rotations.sum(), rotations: 2+1+local_rotations.sum(), rotations: 1+local_rotations.sum(), rotations: 1+local_rotations.sum()]
+                        X                                               
+
+
+                                   2   3              0  1        0
+                                   X   X              X  X        X
+[-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+[  2,  3,  0,  1,  2,  3,  0,  1,  2,  3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1,  2]
 

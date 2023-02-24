@@ -4,6 +4,8 @@ mod data;
 const SIDE_AMOUNT: i32 = 4;
 
 fn main() {
+
+    /*
     struct TestCorrectIndex;
     impl CorrectIndex for TestCorrectIndex{}
     println!("answer: {}", TestCorrectIndex::adjust_rotation(-4));
@@ -20,4 +22,6 @@ fn main() {
     impl CorrectRanges for TestCorrectRanges{}
 
     println!("{:?}", TestCorrectRanges::get_range(-10, 10))
+    
+    */
 }

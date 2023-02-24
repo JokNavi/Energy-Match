@@ -1,7 +1,6 @@
 
 pub trait CorrectIndex {
     fn adjust_rotation(rotation: i32) -> i32 {
-        println!("{}", rotation);
         if rotation >= 0 {
             return rotation.abs() % crate::SIDE_AMOUNT;
         }
@@ -34,7 +33,8 @@ pub mod correct_index_tests {
         assert_eq!(TestCorrectIndex::adjust_rotation(0), 0);
         assert_eq!(TestCorrectIndex::adjust_rotation(-3), 1);
         assert_eq!(TestCorrectIndex::adjust_rotation(-8), 0);
-        assert_eq!(TestCorrectIndex::adjust_rotation(-8), 0);
+        assert_eq!(TestCorrectIndex::adjust_rotation(-4), 0);
+        assert_eq!(TestCorrectIndex::adjust_rotation(-0), 0);
     }
 
     #[test]

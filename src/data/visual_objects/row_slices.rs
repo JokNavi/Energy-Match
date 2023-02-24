@@ -49,9 +49,6 @@ impl PartialEq for RowSlice {
 #[cfg(test)]
 pub mod row_slice_tests {
     use colored::Colorize;
-
-    use crate::data::details::indexes::CorrectIndex;
-
     use super::RowSlice;
 
     #[test]
@@ -59,7 +56,7 @@ pub mod row_slice_tests {
         assert_eq!(
             RowSlice::new(3, 0),
             RowSlice {
-                added_rotations: vec![RowSlice::adjust_rotation(3)],
+                rotations: vec![3],
                 index: 0,
                 display_value: RowSlice::create_side_color(3, 0),
             }
@@ -78,19 +75,24 @@ pub mod row_slice_tests {
     fn add_rotation() {
         let mut row_slice = RowSlice::new(0, 0);
         row_slice.add_rotation(2);
-        assert_eq!(row_slice, RowSlice::new(2, 0));
+        assert_eq!(row_slice.rotations, vec![0, 2]);
 
         row_slice = RowSlice::new(1, 0);
         row_slice.add_rotation(3);
-        assert_eq!(row_slice, RowSlice::new(0, 0));
+        assert_eq!(row_slice.rotations, vec![1, 3]);
 
         row_slice = RowSlice::new(-1, 0);
         row_slice.add_rotation(1);
-        assert_eq!(row_slice, RowSlice::new(0, 0));
+        assert_eq!(row_slice.rotations, vec![-1, 1]);
     }
 
     #[test]
     fn rotation(){
-
+        let mut row_slice = RowSlice::new(0, 0);
+        assert_eq!(row_slice.rotations(), 0);
+        row_slice.add_rotation(2);
+        assert_eq!(row_slice.rotations(), 2);
+        row_slice.add_rotation(8);
+        assert_eq!(row_slice.rotations(), 2);
     }
 }

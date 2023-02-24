@@ -20,7 +20,8 @@ Your goal could be to match a certain colour combination in as least tries as po
 
 
 testing:
-local rotation = 2
-cube_list = [rotations: 2, rotations: 4, rotations: 2, rotations: 1]
+local rotation = [1]
+cube_list = [rotations: [2, 1], rotations: [2, 1], rotations: [1, 1], rotations: [1]]
+                                            X 
 [2, 2, 1, 1]
 

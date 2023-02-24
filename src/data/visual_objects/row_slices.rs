@@ -31,12 +31,12 @@ impl RowSlice {
     }
 
     pub fn add_rotation(&mut self, amount: i32) {
-        self.rotations = self.rotations + Self::adjust_rotation(amount.abs());
+        self.rotations = Self::adjust_rotation(self.rotations + amount.abs());
         self.display_value = Self::create_side_color(self.index, self.rotations);
     }
 
     pub fn remove_rotation(&mut self, amount: i32) {
-        self.rotations = self.rotations - Self::adjust_rotation(amount.abs());
+        self.rotations = Self::adjust_rotation(self.rotations - amount.abs());
         self.display_value = Self::create_side_color(self.index, self.rotations);
     }
 }
@@ -82,9 +82,24 @@ pub mod row_slice_tests {
         row_slice.add_rotation(3);
         assert_eq!(row_slice.rotations, 0);
 
-        row_slice = RowSlice::new(-1, 0);
-        row_slice.add_rotation(1);
-        assert_eq!(row_slice.rotations, 0);
+        row_slice = RowSlice::new(0, 0);
+        row_slice.add_rotation(5);
+        assert_eq!(row_slice.rotations, 1);
+    }
+
+    #[test]
+    fn remove_rotation() {
+        let mut row_slice = RowSlice::new(0, 0);
+        row_slice.remove_rotation(2);
+        assert_eq!(row_slice.rotations, 2);
+
+        row_slice = RowSlice::new(1, 0);
+        row_slice.remove_rotation(3);
+        assert_eq!(row_slice.rotations, 2);
+
+        row_slice = RowSlice::new(0, 0);
+        row_slice.remove_rotation(1);
+        assert_eq!(row_slice.rotations, 1);
     }
 
     #[test]

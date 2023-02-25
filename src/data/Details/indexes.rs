@@ -1,3 +1,5 @@
+use rand::Rng;
+
 use crate::data::game_logic::games::SIDE_AMOUNT;
 
 pub trait CorrectIndex {
@@ -16,6 +18,15 @@ pub trait CorrectRanges {
         } else {
             (start..=end).collect()
         }
+    }
+}
+
+
+pub trait GenerateSlices {
+    fn generate_slices(length: i32) -> Vec<i32>{
+        (0..length)
+            .map(|_| rand::thread_rng().gen_range(0..=SIDE_AMOUNT - 1))
+            .collect()
     }
 }
 

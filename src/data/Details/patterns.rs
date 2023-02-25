@@ -3,7 +3,7 @@ use crate::data::game_logic::games::SIDE_AMOUNT;
 use rand::Rng;
 
 pub struct TargetPattern {
-    pattern: Vec<i32>,
+    pub pattern: Vec<i32>,
 }
 impl CorrectRanges for TargetPattern {}
 

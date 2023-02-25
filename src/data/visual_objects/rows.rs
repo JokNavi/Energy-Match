@@ -33,13 +33,23 @@ impl Row {
 }
 
 #[cfg(test)]
-mod TestRow{
+mod TestRow {
     use super::Row;
 
     #[test]
     fn get_slice(){
-        let row = Row::new(50);
+        let row = Row::new(5);
         assert_eq!(row.get_slice(0).unwrap(), row.slices[0]);
-        assert_eq!(row.get_slice(100), None);
+        assert_eq!(row.get_slice(10), None);
+    }
+
+
+    #[test]
+    fn set_slice(){
+        let mut row = Row::new(5);
+        row.set_slice(0, 1);
+        assert_eq!(row.get_slice(0).unwrap(), 1);
+
+        assert_eq!(row.set_slice(10, 5), Err("Index is out of bounds".to_string()));
     }
 }

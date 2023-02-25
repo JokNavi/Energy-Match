@@ -24,22 +24,11 @@ impl TargetPattern {
 
 pub trait ContainsPattern {
     fn contains_pattern(&self, pattern: Vec<i32>) -> bool;
-        /* 
-        println!("pattern: {:?}", pattern);
-        for window in pattern.windows(pattern.len()) {
-            println!("Window: {:?}", window);
-            if window == pattern.as_slice() { 
-                println!("Returned: {:?}", window);
-                return true;
-            }
-        }
-        false
-        */
 }
 
 #[cfg(test)]
 mod test_tartget_pattern {
-    use super::{TargetPattern, ContainsPattern};
+    use super::{ContainsPattern, TargetPattern};
 
     #[test]
     fn set_pattern() {

@@ -1,6 +1,6 @@
 use rand::Rng;
 
-use crate::data::game_logic::games::SIDE_AMOUNT;
+use crate::game_logic::games::SIDE_AMOUNT;
 
 pub trait CorrectIndex {
     fn adjust_rotation(rotation: i32) -> i32 {

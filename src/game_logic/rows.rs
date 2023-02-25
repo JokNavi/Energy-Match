@@ -1,10 +1,7 @@
-use std::fmt::Error;
-
-use crate::data::details::indexes::{GenerateSlices, CorrectIndex};
-
+use crate::Details::indexes::{CorrectIndex, GenerateSlices};
 
 pub struct Row {
-    slices: Vec<i32>,
+    pub slices: Vec<i32>,
     index: i32,
     length: i32,
 }
@@ -37,19 +34,21 @@ mod TestRow {
     use super::Row;
 
     #[test]
-    fn get_slice(){
+    fn get_slice() {
         let row = Row::new(5);
         assert_eq!(row.get_slice(0).unwrap(), row.slices[0]);
         assert_eq!(row.get_slice(10), None);
     }
 
-
     #[test]
-    fn set_slice(){
+    fn set_slice() {
         let mut row = Row::new(5);
         row.set_slice(0, 1);
         assert_eq!(row.get_slice(0).unwrap(), 1);
 
-        assert_eq!(row.set_slice(10, 5), Err("Index is out of bounds".to_string()));
+        assert_eq!(
+            row.set_slice(10, 5),
+            Err("Index is out of bounds".to_string())
+        );
     }
 }

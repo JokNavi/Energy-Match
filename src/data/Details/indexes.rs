@@ -21,9 +21,8 @@ pub trait CorrectRanges {
     }
 }
 
-
 pub trait GenerateSlices {
-    fn generate_slices(length: i32) -> Vec<i32>{
+    fn generate_slices(length: i32) -> Vec<i32> {
         (0..length)
             .map(|_| rand::thread_rng().gen_range(0..=SIDE_AMOUNT - 1))
             .collect()
@@ -60,7 +59,6 @@ mod correct_index_tests {
         assert_eq!(TestCorrectRanges::get_range(-5, -3), vec![-5, -4, -3]);
     }
 
-    
     #[test]
     fn generate_slices() {
         assert_eq!(TestGenerateSlices::generate_slices(5).len(), 5);

@@ -1,11 +1,11 @@
-use super::indexes::{GenerateSlices, CorrectIndex};
+use super::indexes::{CorrectIndex, GenerateSlices};
 
 pub struct TargetPattern {
     pub pattern: Vec<i32>,
 }
 
 impl CorrectIndex for TargetPattern {}
-impl GenerateSlices for TargetPattern{}
+impl GenerateSlices for TargetPattern {}
 
 impl TargetPattern {
     pub fn new(length: i32) -> Self {
@@ -15,7 +15,10 @@ impl TargetPattern {
     }
 
     pub fn set_pattern(&mut self, new_pattern: Vec<i32>) {
-        self.pattern = new_pattern.iter().map(|x| Self::adjust_rotation(*x) ).collect();
+        self.pattern = new_pattern
+            .iter()
+            .map(|x| Self::adjust_rotation(*x))
+            .collect();
     }
 }
 

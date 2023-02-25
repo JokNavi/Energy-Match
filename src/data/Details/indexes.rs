@@ -32,11 +32,14 @@ pub trait GenerateSlices {
 
 #[cfg(test)]
 mod correct_index_tests {
-    use super::{CorrectIndex, CorrectRanges};
+    use super::{CorrectIndex, CorrectRanges, GenerateSlices};
     struct TestCorrectIndex;
     impl CorrectIndex for TestCorrectIndex {}
     struct TestCorrectRanges;
     impl CorrectRanges for TestCorrectRanges {}
+
+    struct TestGenerateSlices;
+    impl GenerateSlices for TestGenerateSlices {}
 
     #[test]
     fn correct_side_index() {
@@ -55,5 +58,12 @@ mod correct_index_tests {
         assert_eq!(TestCorrectRanges::get_range(5, 0), vec![0, 1, 2, 3, 4, 5]);
         assert_eq!(TestCorrectRanges::get_range(5, 5), vec![5]);
         assert_eq!(TestCorrectRanges::get_range(-5, -3), vec![-5, -4, -3]);
+    }
+
+    
+    #[test]
+    fn generate_slices() {
+        assert_eq!(TestGenerateSlices::generate_slices(5).len(), 5);
+        assert_eq!(TestGenerateSlices::generate_slices(0).len(), 0);
     }
 }

@@ -15,9 +15,4 @@ impl Row{
         }
     }
     
-    fn generate_slice() -> i32{
-        (0..length)
-            .map(|_| rand::thread_rng().gen_range(0..=SIDE_AMOUNT - 1))
-            .collect()
-    }
 }

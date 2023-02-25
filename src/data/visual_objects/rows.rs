@@ -1,11 +1,15 @@
-use crate::data::details::indexes::GenerateSlices;
+use std::fmt::Error;
+
+use crate::data::details::indexes::{GenerateSlices, CorrectIndex};
 
 
 pub struct Row {
     slices: Vec<i32>,
     index: i32,
+    length: i32,
 }
 
+impl CorrectIndex for Row {}
 impl GenerateSlices for Row {}
 
 impl Row {
@@ -13,6 +17,7 @@ impl Row {
         Self {
             slices: Self::generate_slices(length),
             index: 0,
+            length,
         }
     }
 
@@ -20,8 +25,10 @@ impl Row {
         self.slices.get(index).copied()
     }
 
-    pub fn set_slice(&mut self, index: usize, value: i32) -> Result<i32, String> {
-
+    pub fn set_slice(&mut self, index: usize, value: i32) -> Result<(), String> {
+        let Some(mut_ref) = self.slices.get_mut(index) else { return Err("Index is out of bounds".to_string()) };
+        *mut_ref = Self::adjust_rotation(value);
+        Ok(())
     }
 }
 

@@ -19,10 +19,7 @@ impl Row {
             index,
             slice_collection: HashMap::from([(
                 index,
-                RowSlice::new(
-                    rand::thread_rng().gen_range(0..=SIDE_AMOUNT - 1),
-                    index,
-                ),
+                RowSlice::new(rand::thread_rng().gen_range(0..=SIDE_AMOUNT - 1), index),
             )]),
         }
     }
@@ -45,7 +42,11 @@ impl Row {
     }
 
     fn contains_pattern(&self, target_pattern: &Vec<i32>) -> bool {
-        let slice_rotations: Vec<i32> = self.slice_collection.iter().map(|(i, x)| x.rotations()).collect();
+        let slice_rotations: Vec<i32> = self
+            .slice_collection
+            .iter()
+            .map(|(i, x)| x.rotations())
+            .collect();
         let slice_len = target_pattern.len();
         for window in slice_rotations.windows(slice_len) {
             if window == target_pattern.as_slice() {
@@ -58,8 +59,9 @@ impl Row {
 
 impl PartialEq for Row {
     fn eq(&self, other: &Self) -> bool {
-        self.local_rotations == other.local_rotations && self.index == other.index &&
-        self.slice_collection == other.slice_collection
+        self.local_rotations == other.local_rotations
+            && self.index == other.index
+            && self.slice_collection == other.slice_collection
     }
 }
 
@@ -67,7 +69,7 @@ impl PartialEq for Row {
 mod row_tests {
     use super::Row;
 
-    fn fake_eq(left: &Row, right: &Row) -> bool{
+    fn fake_eq(left: &Row, right: &Row) -> bool {
         left.local_rotations == right.local_rotations && left.index == right.index
     }
 
@@ -85,4 +87,3 @@ mod row_tests {
         assert_eq!(row.get_slice(10).rotations(), row.get_slice(10).rotations());
     }
 }
-

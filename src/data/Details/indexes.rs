@@ -5,7 +5,7 @@ pub trait CorrectIndex {
         if rotation >= 0 {
             return rotation.abs() % SIDE_AMOUNT;
         }
-        (SIDE_AMOUNT - (rotation.abs() % SIDE_AMOUNT) ) % SIDE_AMOUNT
+        (SIDE_AMOUNT - (rotation.abs() % SIDE_AMOUNT)) % SIDE_AMOUNT
     }
 }
 

@@ -1,3 +1,3 @@
-pub mod games;
-pub mod shapes;
-pub mod sides;
+pub mod details;
+pub mod visual_objects;
+pub mod game_logic;

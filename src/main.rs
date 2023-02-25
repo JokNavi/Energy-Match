@@ -1,10 +1,8 @@
-mod data;
-use data::{games::Game};
+use crate::data::details::indexes::{CorrectIndex, CorrectRanges};
 
-const SIDE_AMOUNT: i32 = 4;
+mod data;
+
 
 fn main() {
-    let mut game = Game::new();
-    game.game_loop()
-    
+
 }

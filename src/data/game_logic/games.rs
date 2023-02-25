@@ -8,3 +8,5 @@ struct Game {
     moves_done: i32,
     target_pattern: TargetPattern,
 }
+
+impl Game {}

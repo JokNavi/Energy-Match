@@ -1,4 +1,4 @@
-use crate::data::visual_objects::rows::Row;
+use crate::data::visual_objects::{rows::Row, row_slices::RowSlice};
 
 pub const SIDE_AMOUNT: i32 = 4;
 

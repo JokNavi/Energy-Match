@@ -43,6 +43,17 @@ impl Row {
                 .expect("Just checked the RowSlice object exists in the list. ")
         }
     }
+
+    fn contains_pattern(&self, target_pattern: &Vec<i32>) -> bool {
+        let slice_rotations: Vec<i32> = self.slice_collection.iter().map(|(i, x)| x.rotations()).collect();
+        let slice_len = target_pattern.len();
+        for window in slice_rotations.windows(slice_len) {
+            if window == target_pattern.as_slice() {
+                return true;
+            }
+        }
+        false
+    }
 }
 
 impl PartialEq for Row {

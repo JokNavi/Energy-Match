@@ -1,4 +1,4 @@
-use crate::Details::indexes::{CorrectIndex, GenerateSlices};
+use crate::details::indexes::{CorrectIndex, GenerateSlices};
 
 pub struct Row {
     pub slices: Vec<i32>,

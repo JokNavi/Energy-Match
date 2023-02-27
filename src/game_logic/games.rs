@@ -1,11 +1,11 @@
-use crate::{Details::patterns::{ContainsPattern, TargetPattern}};
+use crate::{details::patterns::{ContainsPattern, TargetPattern}};
 use super::rows::Row;
-
 
 pub const SIDE_AMOUNT: i32 = 4;
 pub const LEVEL_SIZE: i32 = 50;
 pub const TARGET_PATTERN_LENGTH: i32 = 3;
 pub const DISPLAY_LENGTH: usize = 5;
+
 
 struct Game {
     row: Row,
@@ -38,15 +38,16 @@ impl Game {
         let mut horizontal_line = "...=".to_string();
         let mut middle_row = "  |".to_string();
         for i in 0..5{
-            if let Some(value) = self.row.get_slice((index.try_into().unwrap() - 2) + i) {
+            if let Some(value) = self.row.get_slice((index as usize - 2) + i) {
                 horizontal_line.push_str(&"=".repeat(DISPLAY_LENGTH * 7));
                 middle_row.push_str(&format!(" [{value}]"));
             } else {break};           
         }
         horizontal_line.push_str("==...");
         middle_row.push_str(" |   ");
+        Ok(())
     }
-    
+
     /* 
     fn middle_row(self, index: usize) {
         let start_adjuster = (1.index)

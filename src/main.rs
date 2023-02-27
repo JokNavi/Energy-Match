@@ -1,7 +1,7 @@
 use game_logic::games::SIDE_AMOUNT;
 
 pub mod game_logic;
-pub mod Details;
+pub mod details;
 
 fn main() {
 }

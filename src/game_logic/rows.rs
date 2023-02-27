@@ -1,4 +1,4 @@
-use crate::details::indexes::{CorrectIndex, GenerateSlices};
+use crate::traits::indexes::{CorrectIndex, GenerateSlices};
 
 pub struct Row {
     pub slices: Vec<i32>,
@@ -18,12 +18,12 @@ impl Row {
         }
     }
 
-    pub fn get_slice(&self, index: usize) -> Option<i32> {
-        self.slices.get(index).copied()
+    pub fn get_slice(&self, index: i32) -> Option<i32> {
+        self.slices.get(index as usize).copied()
     }
 
-    pub fn set_slice(&mut self, index: usize, value: i32) -> Result<(), String> {
-        let Some(mut_ref) = self.slices.get_mut(index) else { return Err("Index is out of bounds".to_string()) };
+    pub fn set_slice(&mut self, index: i32, value: i32) -> Result<(), String> {
+        let Some(mut_ref) = self.slices.get_mut(index as usize) else { return Err("Index is out of bounds".to_string()) };
         *mut_ref = Self::adjust_rotation(value);
         Ok(())
     }

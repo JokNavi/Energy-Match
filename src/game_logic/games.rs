@@ -1,4 +1,4 @@
-use crate::{details::patterns::{ContainsPattern, TargetPattern}};
+use crate::{traits::patterns::{ContainsPattern, TargetPattern}};
 use super::rows::Row;
 
 pub const SIDE_AMOUNT: i32 = 4;
@@ -7,7 +7,7 @@ pub const TARGET_PATTERN_LENGTH: i32 = 3;
 pub const DISPLAY_LENGTH: usize = 5;
 
 
-struct Game {
+pub struct Game {
     row: Row,
     moves_done: i32,
     target_pattern: TargetPattern,
@@ -33,25 +33,26 @@ impl Game {
         }
     }
 
-    pub fn display(&self, index: i32) -> Result<(), String>{
+    fn get_display(&self, index: i32) -> Result<(String, String), String>{
         if index > LEVEL_SIZE || index < 0 {return Err("Index out of bounds".to_string())}
         let mut horizontal_line = "...=".to_string();
-        let mut middle_row = "  |".to_string();
+        let mut middle_line = "   |".to_string();
         for i in 0..5{
-            if let Some(value) = self.row.get_slice((index as usize - 2) + i) {
-                horizontal_line.push_str(&"=".repeat(DISPLAY_LENGTH * 7));
-                middle_row.push_str(&format!(" [{value}]"));
-            } else {break};           
+            if let Some(value) = self.row.get_slice((index - 2) + i) {
+                horizontal_line.push_str(&"=".repeat(7));
+                middle_line.push_str(&format!(" [{value:^4}]"));
+            } else {continue;};           
         }
         horizontal_line.push_str("==...");
-        middle_row.push_str(" |   ");
-        Ok(())
+        middle_line.push_str(" |   ");
+        Ok((horizontal_line, middle_line))
     }
 
-    /* 
-    fn middle_row(self, index: usize) {
-        let start_adjuster = (1.index)
-
+    pub fn display_row(&self, index: i32){
+        if let Ok(lines) = self.get_display(index){
+            println!("{}", lines.0);
+            println!("{}", lines.1);
+            println!("{}", lines.0);
+        };
     }
-    */ 
 }

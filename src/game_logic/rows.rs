@@ -38,6 +38,10 @@ impl Row {
 
 #[cfg(test)]
 mod TestRow {
+    use core::panic;
+
+    use crate::game_logic::games::LEVEL_SIZE;
+
     use super::Row;
 
     #[test]
@@ -49,13 +53,19 @@ mod TestRow {
 
     #[test]
     fn set_slice() {
-        let mut row = Row::new(5);
-        row.set_slice(0, 1);
-        assert_eq!(row.get_slice(0).unwrap(), 1);
+        let mut row = Row::new(50);
+        if let Ok(()) = row.set_slice(0, 1){assert_eq!(row.get_slice(0).unwrap(), 1);}
+        else {panic!("Index test failed")}
 
         assert_eq!(
-            row.set_slice(10, 5),
+            row.set_slice(LEVEL_SIZE as i32, 5),
+            Err("Index is out of bounds".to_string())
+        );
+
+        assert_eq!(
+            row.set_slice(LEVEL_SIZE as usize, 5),
             Err("Index is out of bounds".to_string())
         );
     }
 }
+

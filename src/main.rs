@@ -5,5 +5,8 @@ pub mod traits;
 
 fn main() {
     let game = Game::new();
-    game.display_row(0);
+    game.display_row(-3);
+
 }
+
+

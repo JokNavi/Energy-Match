@@ -98,6 +98,10 @@ mod correct_index_tests {
             TestCorrectIndex::validate_index(-1 as i32),
             Err("Index below 0".to_string())
         );
+        assert_eq!(
+            TestCorrectIndex::validate_index(-3 as i32),
+            Err("Index below 0".to_string())
+        );
 
         assert_eq!(TestCorrectIndex::validate_index(5 as usize), Ok(5 as usize));
         assert_eq!(

@@ -37,7 +37,7 @@ impl Row {
 }
 
 #[cfg(test)]
-mod TestRow {
+mod test_row {
     use core::panic;
 
     use crate::game_logic::games::LEVEL_SIZE;

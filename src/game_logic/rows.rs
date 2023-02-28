@@ -18,7 +18,7 @@ impl Row {
         }
     }
 
-    pub fn get_slice<T>(&self, index: i32) -> Option<i32>
+    pub fn get_slice<T>(&self, index: T) -> Option<i32>
     where
         T: TryInto<i32> + TryInto<usize> + Copy,
     {

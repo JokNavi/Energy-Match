@@ -37,21 +37,7 @@ impl Game {
         }
     }
 
-    fn get_display(&self, index: usize) -> Result<(String, String), String> {
-        for i in 0..5 {
-            if let Some(value) = self.row.get_slice((index - 2) + i) {
-                horizontal_line.push_str(&"=".repeat(7));
-                middle_line.push_str(&format!(" [{value:^4}]"));
-            } else {
-                continue;
-            };
-        }
-        horizontal_line.push_str("==...");
-        middle_line.push_str(" |   ");
-        Ok((horizontal_line, middle_line))
-    }
-
-    fn get_edge_line(&self, index: usize) -> Result<String, String> {
+    fn get_edge_line(&self, index: usize) -> String {
         let mut index: usize;
         let mut edge_line = "...=".to_string();
         for i in 0..DISPLAY_LENGTH {
@@ -62,10 +48,10 @@ impl Game {
             edge_line.push_str(&"=".repeat(7));
         }
         edge_line.push_str("==...");
-        Ok(edge_line)
+        edge_line
     }
 
-    fn get_display_line(&self, index: usize) -> Result<String, String> {
+    fn get_display_line(&self, index: usize) -> String {
         let mut index: usize;
         let mut display_line = "   |".to_string();
         for i in 0..DISPLAY_LENGTH {
@@ -73,18 +59,29 @@ impl Game {
                 Ok(value) => value,
                 Err(err) => continue,
             };
-            self.row.get_slice((index - 2) + i)
+            let value = self.row.get_slice((index - 2) + i).unwrap();
+            display_line.push_str(&format!(" [{value:^4}]"));
         }
-        edge_line.push_str("==...");
-        Ok(edge_line)
+        display_line.push_str(" |   ");
+        display_line
     }
 
-    pub fn display_row(&self, index: i32) {
-        if let Ok(lines) = self.get_display(index) {
-            println!("{}", lines.0);
-            println!("{}", lines.1);
-            println!("{}", lines.0);
+    pub fn display_row<T>(&self, index: T)
+    where
+        T: TryInto<i32> + TryInto<usize> + Copy,
+    {
+        let index = match Self::validate_index(index) {
+            Ok(value) => value,
+            Err(err) => {
+                println!("{}", err);
+                return;
+            }
         };
+        let display_line = self.get_display_line(index);
+        let edge_line = self.get_edge_line(index);
+        println!("{}", edge_line);
+        println!("{}", display_line);
+        println!("{}", edge_line);
     }
 }
 

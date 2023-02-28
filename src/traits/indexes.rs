@@ -1,3 +1,4 @@
+use crate::LEVEL_SIZE;
 use rand::Rng;
 
 use crate::game_logic::games::SIDE_AMOUNT;
@@ -8,6 +9,22 @@ pub trait CorrectIndex {
             return rotation.abs() % SIDE_AMOUNT;
         }
         (SIDE_AMOUNT - (rotation.abs() % SIDE_AMOUNT)) % SIDE_AMOUNT
+    }
+
+    fn validate_index<T>(index: T) -> Result<T, String>
+    where
+        T: TryInto<i32> + TryInto<usize> + Copy,
+    {
+        let index_i32: i32 = match index.try_into() {
+            Err(_) => return Err("Can't be converted to i32".to_string()),
+            Ok(value) => value,
+        };
+
+        return match index_i32 {
+            _ if index_i32 > LEVEL_SIZE => Err("Exceeds LEVEL_SIZE".to_string()),
+            _ if index_i32 < 0 => Err("Index below 0".to_string()),
+            _ => Ok(index),
+        };
     }
 }
 

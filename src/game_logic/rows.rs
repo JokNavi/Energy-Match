@@ -69,12 +69,12 @@ mod test_row {
 
         assert_eq!(
             row.set_slice(LEVEL_SIZE as i32, 5),
-            Err("Index is out of bounds".to_string())
+            Err("Index is out of bounds (too high)".to_string())
         );
 
         assert_eq!(
             row.set_slice(LEVEL_SIZE as usize, 5),
-            Err("Index is out of bounds".to_string())
+            Err("Index is out of bounds (too high)".to_string())
         );
     }
 }

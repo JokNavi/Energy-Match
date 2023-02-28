@@ -21,7 +21,7 @@ pub trait CorrectIndex {
         };
 
         return match index {
-            _ if index >= LEVEL_SIZE => Err("Exceeds LEVEL_SIZE length".to_string()),
+            _ if index >= LEVEL_SIZE => Err("Index is out of bounds".to_string()),
             _ if index < 0 => Err("Index below 0".to_string()),
             _ => Ok(index as usize),
         };
@@ -92,7 +92,7 @@ mod correct_index_tests {
         assert_eq!(TestCorrectIndex::validate_index(0 as i32), Ok(0 as usize));
         assert_eq!(
             TestCorrectIndex::validate_index(LEVEL_SIZE as i32),
-            Err("Exceeds LEVEL_SIZE length".to_string())
+            Err("Index is out of bounds".to_string())
         );
         assert_eq!(
             TestCorrectIndex::validate_index(-1 as i32),
@@ -107,8 +107,7 @@ mod correct_index_tests {
         assert_eq!(TestCorrectIndex::validate_index(0 as usize), Ok(0 as usize));
         assert_eq!(
             TestCorrectIndex::validate_index(level_size_usize),
-            Err("Exceeds LEVEL_SIZE length".to_string())
+            Err("Index is out of bounds".to_string())
         );
     }
-    
 }

@@ -22,9 +22,16 @@ impl Row {
         self.slices.get(index as usize).copied()
     }
 
-    pub fn set_slice(&mut self, index: i32, value: i32) -> Result<(), String> {
-        let Some(mut_ref) = self.slices.get_mut(index as usize) else { return Err("Index is out of bounds".to_string()) };
-        *mut_ref = Self::adjust_rotation(value);
+    pub fn set_slice<T>(&mut self, index: T, value: i32) -> Result<(), String>
+    where
+        T: TryInto<i32> + TryInto<usize> + Copy,
+    {
+        let index = match Self::validate_index(index) {
+            Ok(value) => value,
+            Err(err) => return Err(err),
+        };
+        let slice = self.slices.get_mut(index).unwrap();
+        *slice = Self::adjust_rotation(value);
         Ok(())
     }
 }

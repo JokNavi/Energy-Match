@@ -3,7 +3,6 @@ use rand::Rng;
 
 use crate::game_logic::games::SIDE_AMOUNT;
 
-
 pub trait CorrectIndex {
     fn adjust_rotation(rotation: i32) -> i32 {
         if rotation >= 0 {
@@ -22,7 +21,7 @@ pub trait CorrectIndex {
         };
 
         return match index {
-            _ if index > LEVEL_SIZE => Err("Exceeds LEVEL_SIZE".to_string()),
+            _ if index >= LEVEL_SIZE => Err("Exceeds LEVEL_SIZE length".to_string()),
             _ if index < 0 => Err("Index below 0".to_string()),
             _ => Ok(index as usize),
         };
@@ -87,8 +86,19 @@ mod correct_index_tests {
 
     #[test]
     fn validate_index() {
-
         let level_size_usize: usize = LEVEL_SIZE.try_into().unwrap();
+
+        assert_eq!(TestCorrectIndex::validate_index(5 as i32), Ok(5 as usize));
+        assert_eq!(TestCorrectIndex::validate_index(0 as i32), Ok(0 as usize));
+        assert_eq!(
+            TestCorrectIndex::validate_index(LEVEL_SIZE as i32),
+            Err("Exceeds LEVEL_SIZE length".to_string())
+        );
+        assert_eq!(
+            TestCorrectIndex::validate_index(-1 as i32),
+            Err("Index below 0".to_string())
+        );
+
         assert_eq!(TestCorrectIndex::validate_index(5 as usize), Ok(5 as usize));
         assert_eq!(
             TestCorrectIndex::validate_index(level_size_usize - 1 as usize),
@@ -100,4 +110,5 @@ mod correct_index_tests {
             Err("Exceeds LEVEL_SIZE length".to_string())
         );
     }
+    
 }

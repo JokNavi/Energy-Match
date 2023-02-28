@@ -4,6 +4,6 @@ pub mod game_logic;
 pub mod traits;
 
 fn main() {
-    let mut game = Game::new();
-    game.display_row(LEVEL_SIZE - 1);
+    let game = Game::new();
+    game.display_row(0);
 }

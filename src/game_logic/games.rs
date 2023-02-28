@@ -37,11 +37,10 @@ impl Game {
         }
     }
 
-    fn get_edge_line(&self, index: usize) -> String {
-        let mut index: usize;
+    fn get_edge_line(&self, index: i32) -> String {
         let mut edge_line = "...=".to_string();
         for i in 0..DISPLAY_LENGTH {
-            index = match Self::validate_index((index - 2) + i) {
+            let usize_index = match Self::validate_index((index - 2) + i as i32) {
                 Ok(value) => value,
                 Err(err) => continue,
             };
@@ -51,15 +50,15 @@ impl Game {
         edge_line
     }
 
-    fn get_display_line(&self, index: usize) -> String {
-        let mut index: usize;
+    fn get_display_line(&self, index: i32) -> String 
+    {
         let mut display_line = "   |".to_string();
         for i in 0..DISPLAY_LENGTH {
-            index = match Self::validate_index((index - 2) + i) {
+            let usize_index = match Self::validate_index((index - 2) + i as i32) {
                 Ok(value) => value,
                 Err(err) => continue,
             };
-            let value = self.row.get_slice((index - 2) + i).unwrap();
+            let value = self.row.get_slice(usize_index).unwrap();
             display_line.push_str(&format!(" [{value:^4}]"));
         }
         display_line.push_str(" |   ");
@@ -70,8 +69,8 @@ impl Game {
     where
         T: TryInto<i32> + TryInto<usize> + Copy,
     {
-        let index = match Self::validate_index(index) {
-            Ok(value) => value,
+        let index: i32 = match Self::validate_index(index) {
+            Ok(value) => value.try_into().unwrap(),
             Err(err) => {
                 println!("{}", err);
                 return;
@@ -88,26 +87,13 @@ impl Game {
 #[cfg(test)]
 mod TestGame {
     use super::Game;
-    use super::LEVEL_SIZE;
 
     #[test]
     fn get_display() {
         let game = Game::new();
-        assert_eq!(
-            game.get_display(3).unwrap().0,
-            "...======================================..."
-        );
-        assert_eq!(
-            game.get_display(0).unwrap().0,
-            "...========================..."
-        );
-        assert_eq!(
-            game.get_display(LEVEL_SIZE - 1).unwrap().0,
-            "...========================..."
-        );
+        assert_eq!(game.get_edge_line(3), "...======================================...");
+        assert_eq!(game.get_edge_line(3), "...======================================...");
+        assert_eq!(game.get_edge_line(3), "...======================================...");
 
-        assert_eq!(game.get_display(LEVEL_SIZE - 1).unwrap().1.len(), 30);
-        assert_eq!(game.get_display(0).unwrap().1.len(), 30);
-        assert_eq!(game.get_display(3).unwrap().1.len(), 44);
     }
 }

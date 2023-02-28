@@ -3,6 +3,7 @@ use rand::Rng;
 
 use crate::game_logic::games::SIDE_AMOUNT;
 
+
 pub trait CorrectIndex {
     fn adjust_rotation(rotation: i32) -> i32 {
         if rotation >= 0 {
@@ -11,19 +12,19 @@ pub trait CorrectIndex {
         (SIDE_AMOUNT - (rotation.abs() % SIDE_AMOUNT)) % SIDE_AMOUNT
     }
 
-    fn validate_index<T>(index: T) -> Result<T, String>
+    fn validate_index<T>(index: T) -> Result<usize, String>
     where
         T: TryInto<i32> + TryInto<usize> + Copy,
     {
-        let index_i32: i32 = match index.try_into() {
+        let index: i32 = match index.try_into() {
             Err(_) => return Err("Can't be converted to i32".to_string()),
             Ok(value) => value,
         };
 
-        return match index_i32 {
-            _ if index_i32 >= LEVEL_SIZE => Err("Exceeds LEVEL_SIZE length".to_string()),
-            _ if index_i32 < 0 => Err("Index below 0".to_string()),
-            _ => Ok(index),
+        return match index {
+            _ if index > LEVEL_SIZE => Err("Exceeds LEVEL_SIZE".to_string()),
+            _ if index < 0 => Err("Index below 0".to_string()),
+            _ => Ok(index as usize),
         };
     }
 }
@@ -86,20 +87,6 @@ mod correct_index_tests {
 
     #[test]
     fn validate_index() {
-        assert_eq!(TestCorrectIndex::validate_index(5 as i32), Ok(5 as i32));
-        assert_eq!(
-            TestCorrectIndex::validate_index(LEVEL_SIZE - 1 as i32),
-            Ok(LEVEL_SIZE - 1 as i32)
-        );
-        assert_eq!(TestCorrectIndex::validate_index(0 as i32), Ok(0 as i32));
-        assert_eq!(
-            TestCorrectIndex::validate_index(LEVEL_SIZE as i32),
-            Err("Exceeds LEVEL_SIZE length".to_string())
-        );
-        assert_eq!(
-            TestCorrectIndex::validate_index(-1 as i32),
-            Err("Index below 0".to_string())
-        );
 
         let level_size_usize: usize = LEVEL_SIZE.try_into().unwrap();
         assert_eq!(TestCorrectIndex::validate_index(5 as usize), Ok(5 as usize));

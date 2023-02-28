@@ -34,7 +34,7 @@ impl Game {
     }
 
     fn get_display(&self, index: i32) -> Result<(String, String), String>{
-        if index > LEVEL_SIZE || index < 0 {return Err("Index out of bounds".to_string())}
+        if index >= LEVEL_SIZE || index < 0 {return Err("Index out of bounds".to_string())}
         let mut horizontal_line = "...=".to_string();
         let mut middle_line = "   |".to_string();
         for i in 0..5{
@@ -54,5 +54,23 @@ impl Game {
             println!("{}", lines.1);
             println!("{}", lines.0);
         };
+    }
+}
+
+#[cfg(test)]
+mod TestGame {
+    use super::LEVEL_SIZE;
+    use super::Game;
+
+    #[test]
+    fn get_display(){
+        let game = Game::new();
+        assert_eq!(game.get_display(3).unwrap().0, "...======================================...");
+        assert_eq!(game.get_display(0).unwrap().0, "...========================...");
+        assert_eq!(game.get_display(LEVEL_SIZE-1).unwrap().0, "...========================...");
+
+        assert_eq!(game.get_display(LEVEL_SIZE-1).unwrap().1.len(), 30);
+        assert_eq!(game.get_display(0).unwrap().1.len(), 30);
+        assert_eq!(game.get_display(3).unwrap().1.len(), 44);
     }
 }

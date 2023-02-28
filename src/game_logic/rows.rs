@@ -18,8 +18,15 @@ impl Row {
         }
     }
 
-    pub fn get_slice(&self, index: i32) -> Option<i32> {
-        self.slices.get(index as usize).copied()
+    pub fn get_slice<T>(&self, index: i32) -> Option<i32>
+    where
+        T: TryInto<i32> + TryInto<usize> + Copy,
+    {
+        let index = match Self::validate_index(index) {
+            Ok(value) => value,
+            Err(err) => return None,
+        };
+        self.slices.get(index).copied()
     }
 
     pub fn set_slice<T>(&mut self, index: T, value: i32) -> Result<(), String>
@@ -54,8 +61,11 @@ mod test_row {
     #[test]
     fn set_slice() {
         let mut row = Row::new(50);
-        if let Ok(()) = row.set_slice(0, 1){assert_eq!(row.get_slice(0).unwrap(), 1);}
-        else {panic!("Index test failed")}
+        if let Ok(()) = row.set_slice(0, 1) {
+            assert_eq!(row.get_slice(0).unwrap(), 1);
+        } else {
+            panic!("Index test failed")
+        }
 
         assert_eq!(
             row.set_slice(LEVEL_SIZE as i32, 5),
@@ -68,4 +78,3 @@ mod test_row {
         );
     }
 }
-

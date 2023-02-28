@@ -1,5 +1,8 @@
 use super::rows::Row;
-use crate::traits::patterns::{ContainsPattern, TargetPattern};
+use crate::traits::{
+    indexes::CorrectIndex,
+    patterns::{ContainsPattern, TargetPattern},
+};
 
 pub const SIDE_AMOUNT: i32 = 4;
 pub const LEVEL_SIZE: i32 = 50;
@@ -11,6 +14,8 @@ pub struct Game {
     moves_done: i32,
     target_pattern: TargetPattern,
 }
+
+impl CorrectIndex for Game {}
 
 impl ContainsPattern for Game {
     fn contains_pattern(&self, pattern: Vec<i32>) -> bool {
@@ -32,12 +37,7 @@ impl Game {
         }
     }
 
-    fn get_display(&self, index: i32) -> Result<(String, String), String> {
-        if index >= LEVEL_SIZE || index < 0 {
-            return Err("Index out of bounds".to_string());
-        }
-        let mut horizontal_line = "...=".to_string();
-        let mut middle_line = "   |".to_string();
+    fn get_display(&self, index: usize) -> Result<(String, String), String> {
         for i in 0..5 {
             if let Some(value) = self.row.get_slice((index - 2) + i) {
                 horizontal_line.push_str(&"=".repeat(7));
@@ -49,6 +49,34 @@ impl Game {
         horizontal_line.push_str("==...");
         middle_line.push_str(" |   ");
         Ok((horizontal_line, middle_line))
+    }
+
+    fn get_edge_line(&self, index: usize) -> Result<String, String> {
+        let mut index: usize;
+        let mut edge_line = "...=".to_string();
+        for i in 0..DISPLAY_LENGTH {
+            index = match Self::validate_index((index - 2) + i) {
+                Ok(value) => value,
+                Err(err) => continue,
+            };
+            edge_line.push_str(&"=".repeat(7));
+        }
+        edge_line.push_str("==...");
+        Ok(edge_line)
+    }
+
+    fn get_display_line(&self, index: usize) -> Result<String, String> {
+        let mut index: usize;
+        let mut display_line = "   |".to_string();
+        for i in 0..DISPLAY_LENGTH {
+            index = match Self::validate_index((index - 2) + i) {
+                Ok(value) => value,
+                Err(err) => continue,
+            };
+            self.row.get_slice((index - 2) + i)
+        }
+        edge_line.push_str("==...");
+        Ok(edge_line)
     }
 
     pub fn display_row(&self, index: i32) {

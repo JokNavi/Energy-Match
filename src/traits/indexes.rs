@@ -20,11 +20,11 @@ pub trait CorrectIndex {
             Ok(value) => value,
         };
 
-        return match index {
+        match index {
             _ if index >= LEVEL_SIZE => Err("Index is out of bounds (too high)".to_string()),
             _ if index < 0 => Err("Index below 0".to_string()),
             _ => Ok(index as usize),
-        };
+        }
     }
 }
 

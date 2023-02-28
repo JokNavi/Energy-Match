@@ -26,7 +26,7 @@ impl Row {
     {
         let index = match Self::validate_index(index) {
             Ok(value) => value,
-            Err(err) => return None,
+            Err(_) => return None,
         };
         self.slices.get(index).copied()
     }
@@ -47,23 +47,20 @@ impl Row {
     fn get_edge_line(&self, index: i32) -> String {
         let mut edge_line = "...=".to_string();
         for i in 0..DISPLAY_LENGTH {
-            let usize_index = match Self::validate_index((index - 2) + i as i32) {
-                Ok(value) => value,
-                Err(err) => continue,
+            if Self::validate_index((index - 2) + i as i32).is_ok() {
+                edge_line.push_str(&"=".repeat(7));
             };
-            edge_line.push_str(&"=".repeat(7));
         }
         edge_line.push_str("==...");
         edge_line
     }
 
-    fn get_display_line(&self, index: i32) -> String 
-    {
+    fn get_display_line(&self, index: i32) -> String {
         let mut display_line = "   |".to_string();
         for i in 0..DISPLAY_LENGTH {
             let usize_index = match Self::validate_index((index - 2) + i as i32) {
                 Ok(value) => value,
-                Err(err) => continue,
+                Err(_) => continue,
             };
             let value = self.get_slice(usize_index).unwrap();
             display_line.push_str(&format!(" [{value:^4}]"));
@@ -120,20 +117,35 @@ mod test_row {
             Err("Index is out of bounds (too high)".to_string())
         );
     }
-    
+
     #[test]
     fn get_edge_line() {
         let row = Row::new(LEVEL_SIZE);
         assert_eq!(row.get_edge_line(-1), "...=================...");
         assert_eq!(row.get_edge_line(LEVEL_SIZE), "...=================...");
 
-        assert_eq!(row.get_edge_line(3), "...======================================...");
-        assert_eq!(row.get_edge_line(1), "...===============================...");
+        assert_eq!(
+            row.get_edge_line(3),
+            "...======================================..."
+        );
+        assert_eq!(
+            row.get_edge_line(1),
+            "...===============================..."
+        );
         assert_eq!(row.get_edge_line(0), "...========================...");
 
-        assert_eq!(row.get_edge_line(LEVEL_SIZE - 3), "...======================================...");
-        assert_eq!(row.get_edge_line(LEVEL_SIZE - 2), "...===============================..."); 
-        assert_eq!(row.get_edge_line(LEVEL_SIZE - 1), "...========================...");
+        assert_eq!(
+            row.get_edge_line(LEVEL_SIZE - 3),
+            "...======================================..."
+        );
+        assert_eq!(
+            row.get_edge_line(LEVEL_SIZE - 2),
+            "...===============================..."
+        );
+        assert_eq!(
+            row.get_edge_line(LEVEL_SIZE - 1),
+            "...========================..."
+        );
     }
 
     #[test]
@@ -141,6 +153,9 @@ mod test_row {
         let row = Row::new(LEVEL_SIZE);
         assert_eq!(row.display_row(-1), Err("Index below 0".to_string()));
         assert_eq!(row.display_row(0), Ok(()));
-        assert_eq!(row.display_row(LEVEL_SIZE), Err("Index is out of bounds (too high)".to_string()));
+        assert_eq!(
+            row.display_row(LEVEL_SIZE),
+            Err("Index is out of bounds (too high)".to_string())
+        );
     }
 }

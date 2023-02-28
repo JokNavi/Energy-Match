@@ -36,12 +36,15 @@ impl Game {
             target_pattern: TargetPattern::new(TARGET_PATTERN_LENGTH),
         }
     }
+}
 
-    
+impl Default for Game {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 #[cfg(test)]
 mod test_game {
     use super::Game;
-
 }

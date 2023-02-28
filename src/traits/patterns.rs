@@ -28,7 +28,7 @@ pub trait ContainsPattern {
 
 #[cfg(test)]
 mod test_tartget_pattern {
-    use super::{ContainsPattern, TargetPattern};
+    use super::TargetPattern;
 
     #[test]
     fn set_pattern() {

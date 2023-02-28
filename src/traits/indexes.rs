@@ -21,7 +21,7 @@ pub trait CorrectIndex {
         };
 
         return match index_i32 {
-            _ if index_i32 > LEVEL_SIZE => Err("Exceeds LEVEL_SIZE".to_string()),
+            _ if index_i32 >= LEVEL_SIZE => Err("Exceeds LEVEL_SIZE length".to_string()),
             _ if index_i32 < 0 => Err("Index below 0".to_string()),
             _ => Ok(index),
         };
@@ -48,6 +48,8 @@ pub trait GenerateSlices {
 
 #[cfg(test)]
 mod correct_index_tests {
+    use crate::game_logic::games::LEVEL_SIZE;
+
     use super::{CorrectIndex, CorrectRanges, GenerateSlices};
     struct TestCorrectIndex;
     impl CorrectIndex for TestCorrectIndex {}
@@ -80,5 +82,35 @@ mod correct_index_tests {
     fn generate_slices() {
         assert_eq!(TestGenerateSlices::generate_slices(5).len(), 5);
         assert_eq!(TestGenerateSlices::generate_slices(0).len(), 0);
+    }
+
+    #[test]
+    fn validate_index() {
+        assert_eq!(TestCorrectIndex::validate_index(5 as i32), Ok(5 as i32));
+        assert_eq!(
+            TestCorrectIndex::validate_index(LEVEL_SIZE - 1 as i32),
+            Ok(LEVEL_SIZE - 1 as i32)
+        );
+        assert_eq!(TestCorrectIndex::validate_index(0 as i32), Ok(0 as i32));
+        assert_eq!(
+            TestCorrectIndex::validate_index(LEVEL_SIZE as i32),
+            Err("Exceeds LEVEL_SIZE length".to_string())
+        );
+        assert_eq!(
+            TestCorrectIndex::validate_index(-1 as i32),
+            Err("Index below 0".to_string())
+        );
+
+        let level_size_usize: usize = LEVEL_SIZE.try_into().unwrap();
+        assert_eq!(TestCorrectIndex::validate_index(5 as usize), Ok(5 as usize));
+        assert_eq!(
+            TestCorrectIndex::validate_index(level_size_usize - 1 as usize),
+            Ok(level_size_usize - 1 as usize)
+        );
+        assert_eq!(TestCorrectIndex::validate_index(0 as usize), Ok(0 as usize));
+        assert_eq!(
+            TestCorrectIndex::validate_index(level_size_usize),
+            Err("Exceeds LEVEL_SIZE length".to_string())
+        );
     }
 }

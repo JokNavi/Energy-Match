@@ -17,7 +17,6 @@ pub struct Game {
 
 impl CorrectIndex for Game {}
 
-
 impl Game {
     pub fn new() -> Self {
         Self {

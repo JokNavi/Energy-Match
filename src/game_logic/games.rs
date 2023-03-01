@@ -33,6 +33,19 @@ impl Game {
             self.row.index = index as i32;
         }
     }
+
+    pub fn swipe_up(&mut self, amount: i32 ) {
+        if let Some(value) = self.row.get_slice(self.row.index){
+            self.row.set_slice(value + amount);
+        }
+    } 
+
+    pub fn swipe_down(&mut self, amount: i32 ) {
+        if let Some(value) = self.row.get_slice(self.row.index){
+            self.row.set_slice(value - amount);
+        }
+    } 
+
 }
 
 impl Default for Game {
@@ -43,6 +56,8 @@ impl Default for Game {
 
 #[cfg(test)]
 mod test_game {
+    use crate::traits::indexes::CorrectIndex;
+
     use super::Game;
 
     #[test]
@@ -76,5 +91,21 @@ mod test_game {
         game.swipe_left(1);
         assert_eq!(game.row.index, 0);
 
+    }
+
+    #[test]
+    pub fn swipe_up() {
+        let mut game = Game::default();
+        let mut prev_value = game.row.get_slice(0).unwrap();
+        game.swipe_up(1);
+        assert_eq!(game.row.get_slice(0).unwrap(), Game::adjust_rotation(prev_value + 1));
+    }
+
+    #[test]
+    pub fn swipe_down() {
+        let mut game = Game::default();
+        let mut prev_value = game.row.get_slice(0).unwrap();
+        game.swipe_down(1);
+        assert_eq!(game.row.get_slice(0).unwrap(), Game::adjust_rotation(prev_value - 1));
     }
 }

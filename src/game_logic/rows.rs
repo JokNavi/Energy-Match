@@ -34,8 +34,7 @@ impl Row {
         self.slices.get(index).copied()
     }
 
-    pub fn set_slice(&mut self, value: i32)
-    {
+    pub fn set_slice(&mut self, value: i32) {
         let slice = self.slices.get_mut(self.index as usize).unwrap();
         *slice = Self::adjust_rotation(value);
     }

@@ -1,5 +1,5 @@
 use game_logic::{
-    games::{Game, LEVEL_SIZE, SIDE_AMOUNT},
+    games::{Game, SIDE_AMOUNT},
     rows::Row,
 };
 
@@ -7,7 +7,7 @@ pub mod game_logic;
 pub mod traits;
 
 fn main() {
-    let row = Row::new(LEVEL_SIZE);
+    let row = Row::new(50);
     match row.display_row(3) {
         Ok(_) => (),
         Err(err) => match err {

@@ -5,7 +5,7 @@ use crate::traits::{
 };
 
 pub const SIDE_AMOUNT: i32 = 4;
-pub const LEVEL_SIZE: i32 = 50;
+
 pub const TARGET_PATTERN_LENGTH: i32 = 3;
 pub const DISPLAY_LENGTH: usize = 5;
 
@@ -17,11 +17,10 @@ pub struct Game {
 
 impl CorrectIndex for Game {}
 
-
 impl Game {
     pub fn new() -> Self {
         Self {
-            row: Row::new(LEVEL_SIZE),
+            row: Row::new(50),
             moves_done: 0,
             target_pattern: TargetPattern::new(TARGET_PATTERN_LENGTH),
         }

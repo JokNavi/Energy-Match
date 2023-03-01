@@ -1,4 +1,7 @@
-use crate::traits::{indexes::{CorrectIndex, GenerateSlices, RowIndexError}, patterns::ContainsPattern};
+use crate::traits::{
+    indexes::{CorrectIndex, GenerateSlices, RowIndexError},
+    patterns::ContainsPattern,
+};
 
 use super::games::DISPLAY_LENGTH;
 
@@ -83,7 +86,6 @@ impl Row {
     }
 }
 
-
 impl ContainsPattern for Row {
     fn contains_pattern(&self, pattern: Vec<i32>) -> bool {
         for window in self.slices.windows(pattern.len()) {
@@ -99,7 +101,7 @@ impl ContainsPattern for Row {
 mod test_row {
     use core::panic;
 
-    use crate::{game_logic::games::LEVEL_SIZE, traits::indexes::RowIndexError};
+    use crate::traits::indexes::RowIndexError;
 
     use super::Row;
 
@@ -119,22 +121,19 @@ mod test_row {
             panic!("Index test failed")
         }
 
-        assert_eq!(
-            row.set_slice(LEVEL_SIZE as i32, 5),
-            Err(RowIndexError::AboveMax)
-        );
+        assert_eq!(row.set_slice(row.length, 5), Err(RowIndexError::AboveMax));
 
         assert_eq!(
-            row.set_slice(LEVEL_SIZE as usize, 5),
+            row.set_slice(row.length as usize, 5),
             Err(RowIndexError::AboveMax)
         );
     }
 
     #[test]
     fn get_edge_line() {
-        let row = Row::new(LEVEL_SIZE);
+        let row = Row::new(50);
         assert_eq!(row.get_edge_line(-1), "...=================...");
-        assert_eq!(row.get_edge_line(LEVEL_SIZE), "...=================...");
+        assert_eq!(row.get_edge_line(row.length), "...=================...");
 
         assert_eq!(
             row.get_edge_line(3),
@@ -147,27 +146,24 @@ mod test_row {
         assert_eq!(row.get_edge_line(0), "...========================...");
 
         assert_eq!(
-            row.get_edge_line(LEVEL_SIZE - 3),
+            row.get_edge_line(row.length - 3),
             "...======================================..."
         );
         assert_eq!(
-            row.get_edge_line(LEVEL_SIZE - 2),
+            row.get_edge_line(row.length - 2),
             "...===============================..."
         );
         assert_eq!(
-            row.get_edge_line(LEVEL_SIZE - 1),
+            row.get_edge_line(row.length - 1),
             "...========================..."
         );
     }
 
     #[test]
     fn display_row() {
-        let row = Row::new(LEVEL_SIZE);
+        let row = Row::new(50);
         assert_eq!(row.display_row(-1), Err(RowIndexError::UnderZero));
         assert_eq!(row.display_row(0), Ok(()));
-        assert_eq!(
-            row.display_row(LEVEL_SIZE),
-            Err(RowIndexError::AboveMax)
-        );
+        assert_eq!(row.display_row(row.length), Err(RowIndexError::AboveMax));
     }
 }

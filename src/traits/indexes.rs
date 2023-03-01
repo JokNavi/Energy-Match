@@ -1,4 +1,4 @@
-use crate::LEVEL_SIZE;
+const LEVEL_SIZE: i32 = 50;
 use rand::Rng;
 
 use crate::game_logic::games::SIDE_AMOUNT;
@@ -55,7 +55,8 @@ pub trait GenerateSlices {
 
 #[cfg(test)]
 mod correct_index_tests {
-    use crate::game_logic::games::LEVEL_SIZE;
+
+    use crate::traits::indexes::LEVEL_SIZE;
 
     use super::RowIndexError;
 

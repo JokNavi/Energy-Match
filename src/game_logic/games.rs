@@ -17,16 +17,6 @@ pub struct Game {
 
 impl CorrectIndex for Game {}
 
-impl ContainsPattern for Game {
-    fn contains_pattern(&self, pattern: Vec<i32>) -> bool {
-        for window in self.row.slices.windows(pattern.len()) {
-            if window == pattern.as_slice() {
-                return true;
-            }
-        }
-        false
-    }
-}
 
 impl Game {
     pub fn new() -> Self {

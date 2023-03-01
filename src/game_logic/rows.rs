@@ -1,4 +1,4 @@
-use crate::traits::indexes::{CorrectIndex, GenerateSlices, RowIndexError};
+use crate::traits::{indexes::{CorrectIndex, GenerateSlices, RowIndexError}, patterns::ContainsPattern};
 
 use super::games::DISPLAY_LENGTH;
 
@@ -80,6 +80,18 @@ impl Row {
         println!("{}", display_line);
         println!("{}", edge_line);
         Ok(())
+    }
+}
+
+
+impl ContainsPattern for Row {
+    fn contains_pattern(&self, pattern: Vec<i32>) -> bool {
+        for window in self.slices.windows(pattern.len()) {
+            if window == pattern.as_slice() {
+                return true;
+            }
+        }
+        false
     }
 }
 

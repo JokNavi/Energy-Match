@@ -1,9 +1,9 @@
-use crate::traits::{indexes::{CorrectIndex, GenerateSlices, RowIndexError}, patterns::ContainsPattern};
+use crate::traits::indexes::{CorrectIndex, GenerateSlices, RowIndexError};
 
 use super::games::DISPLAY_LENGTH;
 
 pub struct Row {
-    slices: Vec<i32>,
+    pub slices: Vec<i32>,
     pub index: i32,
     length: i32,
 }
@@ -83,16 +83,6 @@ impl Row {
     }
 }
 
-impl ContainsPattern for Row {
-    fn contains_pattern(&self, pattern: Vec<i32>) -> bool {
-        for window in self.slices.windows(pattern.len()) {
-            if window == pattern.as_slice() {
-                return true;
-            }
-        }
-        false
-    }
-}
 
 #[cfg(test)]
 mod test_row {

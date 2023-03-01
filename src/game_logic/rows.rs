@@ -87,7 +87,7 @@ impl Row {
 mod test_row {
     use core::panic;
 
-    use crate::game_logic::games::LEVEL_SIZE;
+    use crate::{game_logic::games::LEVEL_SIZE, traits::indexes::RowIndexError};
 
     use super::Row;
 
@@ -109,12 +109,12 @@ mod test_row {
 
         assert_eq!(
             row.set_slice(LEVEL_SIZE as i32, 5),
-            Err("Index is out of bounds (too high)".to_string())
+            Err(RowIndexError::AboveMax)
         );
 
         assert_eq!(
             row.set_slice(LEVEL_SIZE as usize, 5),
-            Err("Index is out of bounds (too high)".to_string())
+            Err(RowIndexError::AboveMax)
         );
     }
 
@@ -151,11 +151,11 @@ mod test_row {
     #[test]
     fn display_row() {
         let row = Row::new(LEVEL_SIZE);
-        assert_eq!(row.display_row(-1), Err("Index below 0".to_string()));
+        assert_eq!(row.display_row(-1), Err(RowIndexError::UnderZero));
         assert_eq!(row.display_row(0), Ok(()));
         assert_eq!(
             row.display_row(LEVEL_SIZE),
-            Err("Index is out of bounds (too high)".to_string())
+            Err(RowIndexError::AboveMax)
         );
     }
 }

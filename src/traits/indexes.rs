@@ -3,6 +3,12 @@ use rand::Rng;
 
 use crate::game_logic::games::SIDE_AMOUNT;
 
+pub enum RowIndexError {
+    AboveMax,
+    UnderZero,
+    NonI32Fitting,
+}
+
 pub trait CorrectIndex {
     fn adjust_rotation(rotation: i32) -> i32 {
         if rotation >= 0 {

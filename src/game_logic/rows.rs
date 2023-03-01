@@ -34,17 +34,10 @@ impl Row {
         self.slices.get(index).copied()
     }
 
-    pub fn set_slice<T>(&mut self, index: T, value: i32) -> Result<(), RowIndexError>
-    where
-        T: TryInto<i32> + TryInto<usize> + Copy,
+    pub fn set_slice(&mut self, value: i32)
     {
-        let index = match Self::validate_index(index) {
-            Ok(value) => value,
-            Err(err) => return Err(err),
-        };
-        let slice = self.slices.get_mut(index).unwrap();
+        let slice = self.slices.get_mut(self.index as usize).unwrap();
         *slice = Self::adjust_rotation(value);
-        Ok(())
     }
 
     fn get_edge_line(&self, index: i32) -> String {
@@ -115,18 +108,10 @@ mod test_row {
     #[test]
     fn set_slice() {
         let mut row = Row::new(50);
-        if let Ok(()) = row.set_slice(0, 1) {
-            assert_eq!(row.get_slice(0).unwrap(), 1);
-        } else {
-            panic!("Index test failed")
-        }
-
-        assert_eq!(row.set_slice(row.length, 5), Err(RowIndexError::AboveMax));
-
-        assert_eq!(
-            row.set_slice(row.length as usize, 5),
-            Err(RowIndexError::AboveMax)
-        );
+        row.set_slice(5);
+        assert_eq!(row.get_slice(0), Some(1));
+        row.set_slice(3);
+        assert_eq!(row.get_slice(0), Some(3));
     }
 
     #[test]

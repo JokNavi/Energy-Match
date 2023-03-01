@@ -3,6 +3,7 @@ use rand::Rng;
 
 use crate::game_logic::games::SIDE_AMOUNT;
 
+#[derive(Debug, PartialEq)]
 pub enum RowIndexError {
     AboveMax,
     UnderZero,
@@ -17,18 +18,18 @@ pub trait CorrectIndex {
         (SIDE_AMOUNT - (rotation.abs() % SIDE_AMOUNT)) % SIDE_AMOUNT
     }
 
-    fn validate_index<T>(index: T) -> Result<usize, String>
+    fn validate_index<T>(index: T) -> Result<usize, RowIndexError>
     where
         T: TryInto<i32> + TryInto<usize> + Copy,
     {
         let index: i32 = match index.try_into() {
-            Err(_) => return Err("Can't be converted to i32".to_string()),
+            Err(_) => return Err(RowIndexError::NonI32Fitting), //"Can't be converted to i32".to_string()
             Ok(value) => value,
         };
 
         match index {
-            _ if index >= LEVEL_SIZE => Err("Index is out of bounds (too high)".to_string()),
-            _ if index < 0 => Err("Index below 0".to_string()),
+            _ if index >= LEVEL_SIZE => Err(RowIndexError::AboveMax), //"Index is out of bounds (too high)".to_string()
+            _ if index < 0 => Err(RowIndexError::UnderZero),          //"Index below 0".to_string()
             _ => Ok(index as usize),
         }
     }
@@ -55,6 +56,8 @@ pub trait GenerateSlices {
 #[cfg(test)]
 mod correct_index_tests {
     use crate::game_logic::games::LEVEL_SIZE;
+
+    use super::RowIndexError;
 
     use super::{CorrectIndex, CorrectRanges, GenerateSlices};
     struct TestCorrectIndex;
@@ -98,15 +101,15 @@ mod correct_index_tests {
         assert_eq!(TestCorrectIndex::validate_index(0 as i32), Ok(0 as usize));
         assert_eq!(
             TestCorrectIndex::validate_index(LEVEL_SIZE as i32),
-            Err("Index is out of bounds (too high)".to_string())
+            Err(RowIndexError::AboveMax)
         );
         assert_eq!(
             TestCorrectIndex::validate_index(-1 as i32),
-            Err("Index below 0".to_string())
+            Err(RowIndexError::UnderZero)
         );
         assert_eq!(
             TestCorrectIndex::validate_index(-3 as i32),
-            Err("Index below 0".to_string())
+            Err(RowIndexError::UnderZero)
         );
 
         assert_eq!(TestCorrectIndex::validate_index(5 as usize), Ok(5 as usize));
@@ -117,7 +120,7 @@ mod correct_index_tests {
         assert_eq!(TestCorrectIndex::validate_index(0 as usize), Ok(0 as usize));
         assert_eq!(
             TestCorrectIndex::validate_index(level_size_usize),
-            Err("Index is out of bounds (too high)".to_string())
+            Err(RowIndexError::AboveMax)
         );
     }
 }

@@ -1,11 +1,7 @@
 use super::rows::Row;
-use crate::traits::{
-    indexes::CorrectIndex,
-    patterns::TargetPattern,
-};
+use crate::traits::{indexes::CorrectIndex, patterns::TargetPattern};
 
 pub const SIDE_AMOUNT: i32 = 4;
-
 pub const TARGET_PATTERN_LENGTH: i32 = 3;
 pub const DISPLAY_LENGTH: usize = 5;
 
@@ -27,13 +23,13 @@ impl Game {
     }
 
     pub fn swipe_left(&mut self, amount: i32) {
-        if let Ok(index) = Self::validate_index(self.row.index - amount) {
+        if let Ok(index) = Self::validate_index(self.row.index - amount.abs()) {
             self.row.index = index as i32;
         }
     }
 
     pub fn swipe_right(&mut self, amount: i32) {
-        if let Ok(index) = Self::validate_index(self.row.index + amount) {
+        if let Ok(index) = Self::validate_index(self.row.index + amount.abs()) {
             self.row.index = index as i32;
         }
     }
@@ -48,4 +44,37 @@ impl Default for Game {
 #[cfg(test)]
 mod test_game {
     use super::Game;
+
+    #[test]
+    pub fn swipe_right() {
+        let mut game = Game::default();
+        assert_eq!(game.row.index, 0);
+
+        game.swipe_right(5);
+        assert_eq!(game.row.index, 5);
+
+        game.swipe_right(44);
+        assert_eq!(game.row.index, 49);
+
+        game.swipe_right(1);
+        assert_eq!(game.row.index, 49);
+    }
+
+    #[test]
+    pub fn swipe_left() {
+        let mut game = Game::default();
+
+        game.swipe_right(10);
+        assert_eq!(game.row.index, 10);
+
+        game.swipe_left(5);
+        assert_eq!(game.row.index, 5);
+
+        game.swipe_left(5);
+        assert_eq!(game.row.index, 0);
+
+        game.swipe_left(1);
+        assert_eq!(game.row.index, 0);
+
+    }
 }

@@ -15,11 +15,14 @@ pub struct Game {
 
 impl CorrectIndex for Game {}
 
-enum UserChoice{
+#[derive(Debug, PartialEq)]
+enum UserChoice {
     Up,
     Down,
     Left,
     Right,
+    InvalidSelection,
+    InvalidAmount,
     Invalid,
 }
 
@@ -66,23 +69,31 @@ impl Game {
         input.trim().to_string()
     }
 
-    fn check_choice(choice: String) -> UserChoice {
-        let choice = choice.split_whitespace();
-        let amount: i32 = match choice.nth(1){
-            Some(value) => match value.parse(){
-                Ok(value) => value,
-                Err(_) => return UserChoice::Invalid,
-            }
-            None => return UserChoice::Invalid,
-        };
-        match choice.next() {
-            Some("up") =>  UserChoice::Up,
-            Some("down") =>  UserChoice::Down,
-            Some("left") =>  UserChoice::Left,
-            Some("right") =>  UserChoice::Right,
-            Some(_) =>  UserChoice::Invalid,
-            None => UserChoice::Invalid,
+    fn check_choice(choice: String) -> (UserChoice, Option<i32>) {
+        if !choice.contains(" ") {
+            return (UserChoice::Invalid, None);
         }
+        let mut choice = choice.split_whitespace();
+
+        let move_choice = match choice.next() {
+            Some("up") => UserChoice::Up,
+            Some("down") => UserChoice::Down,
+            Some("left") => UserChoice::Left,
+            Some("right") => UserChoice::Right,
+            Some(_) => UserChoice::InvalidSelection,
+            None => UserChoice::InvalidSelection,
+        };
+
+        let amount: Option<i32> = match choice.next() {
+            Some(value) => match value.parse::<i32>() {
+                Ok(value) => Some(value),
+                Err(_) => return (UserChoice::InvalidAmount, None),
+            },
+            None => return (UserChoice::InvalidAmount, None),
+        };
+
+        (move_choice, amount)
+        
     }
 
     pub fn start(&mut self) {
@@ -96,11 +107,7 @@ impl Game {
         row.display_row(3).unwrap();
         loop {
             choice = Self::ask_user("Please choose an option. (or type \"quit\" to quit)");
-            if choice.contains(" "){
-                match choice.split_whitespace() {
-                    "up" => {println!("Swiping up..."); }
-                }
-            }
+            if choice.contains(" ") {}
 
             match row.display_row(3) {
                 Ok(_) => (),
@@ -110,10 +117,7 @@ impl Game {
                     RowIndexError::NonI32Fitting => println!("Can't be converted to i32"),
                 },
             };
-            
         }
-
-        
     }
 }
 
@@ -127,7 +131,7 @@ impl Default for Game {
 mod test_game {
     use crate::traits::indexes::CorrectIndex;
 
-    use super::Game;
+    use super::{Game, UserChoice};
 
     #[test]
     pub fn swipe_right() {
@@ -181,5 +185,16 @@ mod test_game {
             game.row.get_slice(0).unwrap(),
             Game::adjust_rotation(prev_value - 1)
         );
+    }
+
+    #[test]
+    pub fn check_choice() {
+        assert_eq!(Game::check_choice("up 1".to_string()), (UserChoice::Up, Some(1)));       
+        assert_eq!(Game::check_choice("down 1".to_string()), (UserChoice::Down, Some(1)));
+        assert_eq!(Game::check_choice("left 1".to_string()), (UserChoice::Left, Some(1)));
+        assert_eq!(Game::check_choice("right 1".to_string()), (UserChoice::Right, Some(1)));
+        assert_eq!(Game::check_choice("up1".to_string()), (UserChoice::Invalid, None));
+        assert_eq!(Game::check_choice("asdfs 1".to_string()), (UserChoice::InvalidSelection, Some(1)));
+        assert_eq!(Game::check_choice("up aa".to_string()), (UserChoice::InvalidAmount, None));
     }
 }

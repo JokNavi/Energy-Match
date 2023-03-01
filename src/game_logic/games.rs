@@ -1,7 +1,7 @@
 use super::rows::Row;
 use crate::traits::{
     indexes::CorrectIndex,
-    patterns::{ContainsPattern, TargetPattern},
+    patterns::TargetPattern,
 };
 
 pub const SIDE_AMOUNT: i32 = 4;
@@ -29,6 +29,12 @@ impl Game {
 
     pub fn swipe_left(&mut self, amount: i32) {
         if let Ok(index) = Self::validate_index(self.row.index - amount) {
+            self.row.index = index as i32;
+        }
+    }
+
+    pub fn swipe_right(&mut self, amount: i32) {
+        if let Ok(index) = Self::validate_index(self.row.index + amount) {
             self.row.index = index as i32;
         }
     }

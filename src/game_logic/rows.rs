@@ -101,7 +101,7 @@ impl ContainsPattern for Row {
 mod test_row {
     use core::panic;
 
-    use crate::{game_logic::games::LEVEL_SIZE, traits::indexes::RowIndexError};
+    use crate::traits::indexes::RowIndexError;
 
     use super::Row;
 

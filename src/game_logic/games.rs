@@ -36,6 +36,12 @@ impl Game {
             target_pattern: TargetPattern::new(TARGET_PATTERN_LENGTH),
         }
     }
+
+    pub fn swipe_left(&mut self, amount: i32) {
+        if let Ok(index) = Self::validate_index(self.row.index - amount) {
+            self.row.index = index as i32;
+        }
+    }
 }
 
 impl Default for Game {

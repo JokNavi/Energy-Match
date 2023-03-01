@@ -4,7 +4,7 @@ use super::games::DISPLAY_LENGTH;
 
 pub struct Row {
     pub slices: Vec<i32>,
-    index: i32,
+    pub index: i32,
     length: i32,
 }
 
@@ -83,6 +83,7 @@ impl Row {
     }
 }
 
+
 #[cfg(test)]
 mod test_row {
     use core::panic;
@@ -153,9 +154,6 @@ mod test_row {
         let row = Row::new(LEVEL_SIZE);
         assert_eq!(row.display_row(-1), Err(RowIndexError::UnderZero));
         assert_eq!(row.display_row(0), Ok(()));
-        assert_eq!(
-            row.display_row(LEVEL_SIZE),
-            Err(RowIndexError::AboveMax)
-        );
+        assert_eq!(row.display_row(LEVEL_SIZE), Err(RowIndexError::AboveMax));
     }
 }

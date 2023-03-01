@@ -1,4 +1,4 @@
-use crate::traits::indexes::{CorrectIndex, GenerateSlices};
+use crate::traits::indexes::{CorrectIndex, GenerateSlices, RowIndexError};
 
 use super::games::DISPLAY_LENGTH;
 
@@ -31,7 +31,7 @@ impl Row {
         self.slices.get(index).copied()
     }
 
-    pub fn set_slice<T>(&mut self, index: T, value: i32) -> Result<(), String>
+    pub fn set_slice<T>(&mut self, index: T, value: i32) -> Result<(), RowIndexError>
     where
         T: TryInto<i32> + TryInto<usize> + Copy,
     {
@@ -69,7 +69,7 @@ impl Row {
         display_line
     }
 
-    pub fn display_row<T>(&self, index: T) -> Result<(), String>
+    pub fn display_row<T>(&self, index: T) -> Result<(), RowIndexError>
     where
         T: TryInto<i32> + TryInto<usize> + Copy,
     {

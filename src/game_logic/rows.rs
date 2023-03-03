@@ -6,7 +6,7 @@ use crate::traits::{
 use super::games::DISPLAY_LENGTH;
 
 pub struct Row {
-    slices: Vec<i32>,
+    pub slices: Vec<i32>,
     pub index: i32,
     length: i32,
 }
@@ -35,8 +35,7 @@ impl Row {
     }
 
     pub fn set_slice(&mut self, value: i32) {
-        let slice = self.slices.get_mut(self.index as usize).unwrap();
-        *slice = Self::adjust_rotation(value);
+        self.slices[self.index as usize] = Self::adjust_rotation(value);
     }
 
     fn get_edge_line(&self, index: i32) -> String {

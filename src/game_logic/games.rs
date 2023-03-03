@@ -107,15 +107,15 @@ impl Game {
 
     pub fn start(&mut self) {
         let mut choice = String::new();
-        let row = Row::new(50);
         println!("Starting game...");
         println!("Type \"up x\" to swipe up x times.");
         println!("Type \"down x\" to swipe down x times.");
         println!("Type \"left x\" to swipe left x times.");
         println!("Type \"right x\" to swipe right x times.");
-        row.display_row(3).unwrap();
+        self.row.display_row(self.row.index).unwrap();
         loop {
             choice = Self::ask_user("Please choose an option. (or type \"quit\" to quit)");
+            if choice == "quit"{break}
             match Game::check_choice(choice){
                 Ok((UserChoice::Down, amount)) => {println!("Swiping down..."); self.swipe_down(amount)},
                 Ok((UserChoice::Up, amount)) => {println!("Swiping up..."); self.swipe_up(amount)},
@@ -125,7 +125,7 @@ impl Game {
                 Err(UserChoiceError::InvalidConversion) => {println!("Couldn't convert your inputted amount to a valid format."); continue;},
                 Err(UserChoiceError::InvalidSelection) => {println!("Couldn't proccess your inputted move."); continue;},
             };
-            match row.display_row(3) {
+            match self.row.display_row(self.row.index) {
                 Ok(_) => (),
                 Err(err) => match err {
                     RowIndexError::AboveMax => panic!("Index is out of bounds (too high)"),
@@ -134,6 +134,7 @@ impl Game {
                 },
             };
         }
+        println!("Closing game...");
     }
 }
 

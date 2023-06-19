@@ -1,7 +1,9 @@
 use std::io::{self, Write};
 
 use super::rows::Row;
-use crate::traits::{self, indexes::CorrectIndex, indexes::RowIndexError, patterns::TargetPattern};
+use crate::traits::{
+    indexes::CorrectIndex, indexes::CorrectRanges, indexes::RowIndexError, patterns::TargetPattern,
+};
 
 pub const SIDE_AMOUNT: i32 = 4;
 pub const TARGET_PATTERN_LENGTH: i32 = 3;
@@ -14,6 +16,7 @@ pub struct Game {
 }
 
 impl CorrectIndex for Game {}
+impl CorrectRanges for Game {}
 
 #[derive(Debug, PartialEq)]
 enum UserChoice {
@@ -52,14 +55,18 @@ impl Game {
     }
 
     fn swipe_up(&mut self, amount: i32) {
-        if let Some(value) = self.row.get_slice(self.row.index) {
-            self.row.set_slice(value + amount);
+        for i in Self::get_range(self.row.index, 50 - self.row.index) {
+            if let Some(value) = self.row.get_slice(i) {
+                self.row.set_slice(value + amount);
+            }
         }
     }
 
     fn swipe_down(&mut self, amount: i32) {
-        if let Some(value) = self.row.get_slice(self.row.index) {
-            self.row.set_slice(value - amount);
+        for i in Self::get_range(self.row.index, 50 - self.row.index) {
+            if let Some(value) = self.row.get_slice(i) {
+                self.row.set_slice(value - amount);
+            }
         }
     }
 
@@ -73,7 +80,7 @@ impl Game {
         input.trim().to_string()
     }
 
-    fn parse_amount(choice: String) -> Result<i32, UserChoiceError>{
+    fn parse_amount(choice: String) -> Result<i32, UserChoiceError> {
         match choice.split_whitespace().nth(1) {
             Some(value) => match value.parse::<i32>() {
                 Ok(value) => Ok(value.abs()),
@@ -96,11 +103,11 @@ impl Game {
         }
     }
 
-    fn check_choice(choice: String) ->  Result<(UserChoice, i32), UserChoiceError>  {
+    fn check_choice(choice: String) -> Result<(UserChoice, i32), UserChoiceError> {
         if !choice.contains(" ") {
             return Err(UserChoiceError::InvalidConversion);
         }
-        let amount = Self::parse_amount(choice.clone())?;        
+        let amount = Self::parse_amount(choice.clone())?;
         let selection = Self::parse_selection(choice)?;
         Ok((selection, amount))
     }
@@ -115,15 +122,38 @@ impl Game {
         self.row.display_row(self.row.index).unwrap();
         loop {
             choice = Self::ask_user("Please choose an option. (or type \"quit\" to quit)");
-            if choice == "quit"{break}
-            match Game::check_choice(choice){
-                Ok((UserChoice::Down, amount)) => {println!("Swiping down..."); self.swipe_down(amount)},
-                Ok((UserChoice::Up, amount)) => {println!("Swiping up..."); self.swipe_up(amount)},
-                Ok((UserChoice::Left, amount)) => {println!("Swiping left..."); self.swipe_left(amount)},
-                Ok((UserChoice::Right, amount)) => {println!("Swiping right..."); self.swipe_right(amount)},
-                Err(UserChoiceError::InvalidAmount) => {println!("Couldn't proccess your inputted amount."); continue;},
-                Err(UserChoiceError::InvalidConversion) => {println!("Couldn't convert your inputted amount to a valid format."); continue;},
-                Err(UserChoiceError::InvalidSelection) => {println!("Couldn't proccess your inputted move."); continue;},
+            if choice == "quit" {
+                break;
+            }
+            match Game::check_choice(choice) {
+                Ok((UserChoice::Down, amount)) => {
+                    println!("Swiping down...");
+                    self.swipe_down(amount)
+                }
+                Ok((UserChoice::Up, amount)) => {
+                    println!("Swiping up...");
+                    self.swipe_up(amount)
+                }
+                Ok((UserChoice::Left, amount)) => {
+                    println!("Swiping left...");
+                    self.swipe_left(amount)
+                }
+                Ok((UserChoice::Right, amount)) => {
+                    println!("Swiping right...");
+                    self.swipe_right(amount)
+                }
+                Err(UserChoiceError::InvalidAmount) => {
+                    println!("Couldn't proccess your inputted amount.");
+                    continue;
+                }
+                Err(UserChoiceError::InvalidConversion) => {
+                    println!("Couldn't convert your inputted amount to a valid format.");
+                    continue;
+                }
+                Err(UserChoiceError::InvalidSelection) => {
+                    println!("Couldn't proccess your inputted move.");
+                    continue;
+                }
             };
             match self.row.display_row(self.row.index) {
                 Ok(_) => (),
@@ -146,7 +176,7 @@ impl Default for Game {
 
 #[cfg(test)]
 mod test_game {
-    use crate::{traits::indexes::CorrectIndex, game_logic::games::UserChoiceError};
+    use crate::{game_logic::games::UserChoiceError, traits::indexes::CorrectIndex};
 
     use super::{Game, UserChoice};
 
@@ -206,12 +236,33 @@ mod test_game {
 
     #[test]
     pub fn check_choice() {
-        assert_eq!(Game::check_choice("up -1".to_string()),Ok((UserChoice::Up, 1)));
-        assert_eq!(Game::check_choice("down 5".to_string()),Ok((UserChoice::Down, 5)));
-        assert_eq!(Game::check_choice("left 1".to_string()),Ok((UserChoice::Left, 1)));
-        assert_eq!(Game::check_choice("right 10".to_string()),Ok((UserChoice::Right, 10)));
-        assert_eq!(Game::check_choice("up ".to_string()), Err(UserChoiceError::InvalidAmount));
-        assert_eq!(Game::check_choice("asdf 1".to_string()), Err(UserChoiceError::InvalidSelection));
-        assert_eq!(Game::check_choice("".to_string()), Err(UserChoiceError::InvalidConversion));
+        assert_eq!(
+            Game::check_choice("up -1".to_string()),
+            Ok((UserChoice::Up, 1))
+        );
+        assert_eq!(
+            Game::check_choice("down 5".to_string()),
+            Ok((UserChoice::Down, 5))
+        );
+        assert_eq!(
+            Game::check_choice("left 1".to_string()),
+            Ok((UserChoice::Left, 1))
+        );
+        assert_eq!(
+            Game::check_choice("right 10".to_string()),
+            Ok((UserChoice::Right, 10))
+        );
+        assert_eq!(
+            Game::check_choice("up ".to_string()),
+            Err(UserChoiceError::InvalidAmount)
+        );
+        assert_eq!(
+            Game::check_choice("asdf 1".to_string()),
+            Err(UserChoiceError::InvalidSelection)
+        );
+        assert_eq!(
+            Game::check_choice("".to_string()),
+            Err(UserChoiceError::InvalidConversion)
+        );
     }
 }

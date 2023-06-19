@@ -6,7 +6,7 @@ use crate::traits::{
 use super::games::DISPLAY_LENGTH;
 
 pub struct Row {
-    pub slices: Vec<i32>,
+    slices: Vec<i32>,
     pub index: i32,
     length: i32,
 }

@@ -1,6 +1,4 @@
-use game_logic::{
-    games::{Game},
-};
+use game_logic::games::Game;
 
 pub mod game_logic;
 pub mod traits;

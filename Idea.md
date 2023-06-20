@@ -53,7 +53,8 @@ Amount of sides per column: 99 <br>
 
 ## Minimum values 
 Amount of columns: 1 <br>
-Amount of sides per column: 1 <br>
+Amount of sides per column: 2 <br>
+Amount of column rows visible in window: 1 <br>
 All indexes start from 1. So both column indexing in the cycle command and the column values start from one. 
 
 

@@ -41,7 +41,7 @@ cycle 2 down 4
 ## Example game window
 
 ## Default values
-Amount of columns: 10 <br>
+Amount of columns: 11 <br>
 Amount of sides per column: 8 <br>
 window height: 1 value <br>
 In generated levels the selected value visible from the window is random. but the columns are still ordered from 1 to X <br>

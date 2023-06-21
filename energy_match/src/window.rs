@@ -16,7 +16,7 @@ pub const MIN_WINDOW_HEIGHT: u8 = 1;
 
 pub const MAX_COLUMN_AMOUNT: u8 = 99;
 pub const MAX_COLUMN_HEIGHT: u8 = 99;
-pub const MAX_WINDOW_HEIGHT: u8 = 99;
+pub const MAX_WINDOW_HEIGHT: u8 = MAX_COLUMN_HEIGHT / 2;
 pub const MAX_ROOT_VALUE_INDEX: u8 = MAX_COLUMN_AMOUNT - 1;
 
 #[derive(PartialEq, Debug)]
@@ -34,7 +34,7 @@ pub enum NewColumnsWindowError {
 pub struct ColumnsWindow {
     columns: Columns,
     column_amount: u8,
-    column_height: u8,
+    column_length: u8,
     window_height: u8,
     root_value_index: u8,
     columns_selected_indexes: ColumnsSelectedIndexes,
@@ -43,7 +43,7 @@ pub struct ColumnsWindow {
 impl ColumnsWindow {
     pub fn new(
         column_amount: u8,
-        column_height: u8,
+        column_length: u8,
         window_height: u8,
         root_value_index: u8,
     ) -> Result<Self, NewColumnsWindowError> {
@@ -57,11 +57,11 @@ impl ColumnsWindow {
             _ => (),
         };
 
-        match column_height {
-            _ if column_height < MIN_COLUMN_HEIGHT => {
+        match column_length {
+            _ if column_length < MIN_COLUMN_HEIGHT => {
                 return Err(NewColumnsWindowError::NotEnoughColumnValues)
             }
-            _ if column_height > MAX_COLUMN_HEIGHT => {
+            _ if column_length > MAX_COLUMN_HEIGHT => {
                 return Err(NewColumnsWindowError::TooManyColumnValues)
             }
             _ => (),
@@ -88,30 +88,36 @@ impl ColumnsWindow {
             vec![(MIN_COLUMN_AMOUNT..=window_height).collect(); column_amount as usize];
         let mut rng = thread_rng();
         let columns_selected_indexes: ColumnsSelectedIndexes =
-            vec![rng.gen_range(1..=column_height); column_amount as usize]; //random for now
+            vec![rng.gen_range(0..column_length); column_amount as usize]; //random for now
         Ok(Self {
             columns,
             column_amount,
-            column_height,
+            column_length,
             window_height,
             root_value_index,
             columns_selected_indexes,
         })
     }
 
-    pub fn adjust_column_index(&self, value: i8) -> u8 {
-        (value % self.column_height as i8) as u8
+    pub fn correct_column_height(&self, value: i8) -> u8 {
+        let column_length = (self.column_length - MIN_COLUMN_AMOUNT) as i8;
+        let index = value % column_length;
+        if index < 0 {
+            return (self.column_length as i8 - 1 + index) as u8;
+        }
+        return index as u8;
+        
     }
 
     pub fn window(&self) -> Window {
-        let half_window_size = (self.window_height as f32 / 2 as f32).round() as u8;
+        let half_window_size = self.window_height/2;
         let mut window = Vec::with_capacity(self.column_amount as usize);
         for (i, column) in self.columns.iter().enumerate() {
-            let top_column_index = self.adjust_column_index(
-                self.columns_selected_indexes[i] as i8 + half_window_size as i8,
+            let top_column_index = self.correct_column_height(
+                (self.columns_selected_indexes[i] + half_window_size) as i8,
             );
 
-            let bottom_column_index = self.adjust_column_index(
+            let bottom_column_index = self.correct_column_height(
                 self.columns_selected_indexes[i] as i8 - half_window_size as i8,
             );
             window.push(&column[bottom_column_index as usize..=top_column_index as usize])
@@ -135,7 +141,7 @@ impl Default for ColumnsWindow {
 impl PartialEq for ColumnsWindow {
     fn eq(&self, other: &Self) -> bool {
         self.column_amount == other.column_amount
-            && self.column_height == other.column_height
+            && self.column_length == other.column_length
             && self.window_height == other.window_height
             && self.root_value_index == other.root_value_index
             && self.columns_selected_indexes == other.columns_selected_indexes
@@ -231,5 +237,17 @@ pub mod columns_window_tests {
         );
         assert!(default_columns_window.is_ok());
         assert_eq!(default_columns_window.unwrap(), ColumnsWindow::default());
+    }
+
+    #[test]
+    fn correct_column_index() {
+        let columns_window = ColumnsWindow::default();
+        let column_length = (DEFAULT_COLUMN_HEIGHT as i8) - 1;
+        assert_eq!(columns_window.correct_column_height(column_length-1), (column_length -1) as u8);
+        assert_eq!(columns_window.correct_column_height(column_length), 0);
+        assert_eq!(columns_window.correct_column_height(column_length+2), 2);
+        assert_eq!(columns_window.correct_column_height(column_length+column_length), 0);
+        assert_eq!(columns_window.correct_column_height(-1), (column_length-1) as u8);
+        assert_eq!(columns_window.correct_column_height(-(column_length/2)), 4);    
     }
 }

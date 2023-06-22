@@ -7,18 +7,19 @@ type Window<'a> = Vec<WindowRow<'a>>;
 type WindowRow<'a> = Vec<&'a u8>;
 
 const DEFAULT_COLUMN_AMOUNT: u8 = 11;
-const DEFAULT_COLUMN_LENGTH: u8 = 8;
+const DEFAULT_COLUMN_HEIGHT: u8 = 8;
+const DEFAULT_COLUMN_LENGTH: i8 = DEFAULT_COLUMN_HEIGHT as i8 - MIN_COLUMN_HEIGHT as i8 + 1;
 const DEFAULT_WINDOW_HEIGHT: u8 = 3;
 const DEFAULT_ROOT_VALUE_INDEX: u8 = 6;
-const DEFAULT_ENERGY: i32 = (DEFAULT_COLUMN_AMOUNT * DEFAULT_COLUMN_LENGTH) as i32;
+const DEFAULT_ENERGY: i32 = (DEFAULT_COLUMN_AMOUNT * DEFAULT_COLUMN_HEIGHT) as i32;
 
 pub const MIN_COLUMN_AMOUNT: u8 = 1;
-pub const MIN_COLUMN_LENGTH: u8 = 2;
+pub const MIN_COLUMN_HEIGHT: u8 = 2;
 pub const MIN_WINDOW_HEIGHT: u8 = 1;
 
 pub const MAX_COLUMN_AMOUNT: u8 = 99;
-pub const MAX_COLUMN_LENGTH: u8 = 99;
-pub const MAX_WINDOW_HEIGHT: u8 = MAX_COLUMN_LENGTH / 2;
+pub const MAX_COLUMN_HEIGHT: u8 = 99;
+pub const MAX_WINDOW_HEIGHT: u8 = MAX_COLUMN_HEIGHT / 2;
 pub const MAX_ROOT_VALUE_INDEX: u8 = MAX_COLUMN_AMOUNT - 1;
 
 #[derive(PartialEq, Debug)]
@@ -78,10 +79,10 @@ impl ColumnsWindow {
         };
 
         match column_length {
-            _ if column_length < MIN_COLUMN_LENGTH => {
+            _ if column_length < MIN_COLUMN_HEIGHT => {
                 return Err(NewColumnsWindowError::NotEnoughColumnValues)
             }
-            _ if column_length > MAX_COLUMN_LENGTH => {
+            _ if column_length > MAX_COLUMN_HEIGHT => {
                 return Err(NewColumnsWindowError::TooManyColumnValues)
             }
             _ => (),
@@ -126,14 +127,23 @@ impl ColumnsWindow {
         })
     }
 
-    pub fn correct_column_length(&self, value: i8) -> u8 {
-        let column_length = (self.column_length - MIN_COLUMN_LENGTH + 1) as i8;
-        let index = (value - MIN_COLUMN_LENGTH as i8) % column_length;
-        println!("{} % {} = {}", value, column_length, index);
+    pub fn correct_column_values(&self, value: i8) -> u8 {
+        let column_length = (self.column_length - MIN_COLUMN_HEIGHT + 1) as i8;
+        let index = (value - MIN_COLUMN_HEIGHT as i8) % column_length;
+        //println!("{} % {} = {}", value, column_length, index);
         if index < 0 {
             return (self.column_length as i8 + index) as u8;
         }
-        return (MIN_COLUMN_LENGTH as i8 + index) as u8;
+        return (MIN_COLUMN_HEIGHT as i8 + index) as u8;
+    }
+
+    pub fn correct_columns_selected_index(&self, value: i8) -> u8 {
+        let index = value % self.column_length as i8;
+        println!("{} % {} = {}", value, self.column_length as i8, index);
+        if index < 0 {
+            return (self.column_length as i8 + index) as u8;
+        }
+        return index as u8;
     }
 
     pub fn window(&self) -> Window {
@@ -142,7 +152,7 @@ impl ColumnsWindow {
         for window_index_ajustment in (-half_window_size)..=half_window_size {
             let mut window_row: WindowRow = Vec::with_capacity(self.column_amount as usize);
             for (i, column) in self.columns.iter().enumerate() {
-                let selected_index = self.correct_column_length(
+                let selected_index = self.correct_column_values(
                     self.columns_selected_indexes[i] as i8 + window_index_ajustment,
                 );
                 window_row.push(&column[selected_index as usize]);
@@ -170,7 +180,7 @@ impl ColumnsWindow {
         let (smaller_index, bigger_index) = order_indexes(index as u8, self.root_value_index);
         (smaller_index..=bigger_index).for_each(|i| {
             self.columns_selected_indexes[i] =
-                self.correct_column_length(self.columns_selected_indexes[i] as i8 - amount as i8)
+                self.correct_column_values(self.columns_selected_indexes[i] as i8 - amount as i8)
         });
         self.energy = self.energy - amount;
         Ok(())
@@ -181,7 +191,7 @@ impl Default for ColumnsWindow {
     fn default() -> Self {
         ColumnsWindow::new(
             DEFAULT_COLUMN_AMOUNT,
-            DEFAULT_COLUMN_LENGTH,
+            DEFAULT_COLUMN_HEIGHT,
             DEFAULT_WINDOW_HEIGHT,
             DEFAULT_ROOT_VALUE_INDEX,
             DEFAULT_ENERGY,
@@ -209,7 +219,7 @@ pub mod columns_window_tests {
     fn new_minimum_values() {
         let columns_window = ColumnsWindow::new(
             MIN_COLUMN_AMOUNT - 1,
-            MIN_COLUMN_LENGTH,
+            MIN_COLUMN_HEIGHT,
             MIN_WINDOW_HEIGHT,
             0,
             DEFAULT_ENERGY,
@@ -219,7 +229,7 @@ pub mod columns_window_tests {
 
         let columns_window = ColumnsWindow::new(
             MIN_COLUMN_AMOUNT,
-            MIN_COLUMN_LENGTH - 1,
+            MIN_COLUMN_HEIGHT - 1,
             MIN_WINDOW_HEIGHT,
             0,
             DEFAULT_ENERGY,
@@ -232,7 +242,7 @@ pub mod columns_window_tests {
 
         let columns_window = ColumnsWindow::new(
             MIN_COLUMN_AMOUNT,
-            MIN_COLUMN_LENGTH,
+            MIN_COLUMN_HEIGHT,
             MIN_WINDOW_HEIGHT - 1,
             0,
             DEFAULT_ENERGY,
@@ -245,7 +255,7 @@ pub mod columns_window_tests {
 
         let columns_window = ColumnsWindow::new(
             MIN_COLUMN_AMOUNT,
-            MIN_COLUMN_LENGTH,
+            MIN_COLUMN_HEIGHT,
             MIN_WINDOW_HEIGHT,
             0,
             DEFAULT_ENERGY,
@@ -257,7 +267,7 @@ pub mod columns_window_tests {
     fn new_maxiumum_values() {
         let columns_window = ColumnsWindow::new(
             MAX_COLUMN_AMOUNT + 1,
-            MAX_COLUMN_LENGTH,
+            MAX_COLUMN_HEIGHT,
             MAX_WINDOW_HEIGHT,
             0,
             DEFAULT_ENERGY,
@@ -267,7 +277,7 @@ pub mod columns_window_tests {
 
         let columns_window = ColumnsWindow::new(
             MAX_COLUMN_AMOUNT,
-            MAX_COLUMN_LENGTH + 1,
+            MAX_COLUMN_HEIGHT + 1,
             MAX_WINDOW_HEIGHT,
             0,
             DEFAULT_ENERGY,
@@ -280,7 +290,7 @@ pub mod columns_window_tests {
 
         let columns_window = ColumnsWindow::new(
             MAX_COLUMN_AMOUNT,
-            MAX_COLUMN_LENGTH,
+            MAX_COLUMN_HEIGHT,
             MAX_WINDOW_HEIGHT + 1,
             0,
             DEFAULT_ENERGY,
@@ -293,7 +303,7 @@ pub mod columns_window_tests {
 
         let columns_window = ColumnsWindow::new(
             MAX_COLUMN_AMOUNT,
-            MAX_COLUMN_LENGTH,
+            MAX_COLUMN_HEIGHT,
             MAX_WINDOW_HEIGHT,
             0,
             DEFAULT_ENERGY,
@@ -305,7 +315,7 @@ pub mod columns_window_tests {
     fn default() {
         let default_columns_window = ColumnsWindow::new(
             DEFAULT_COLUMN_AMOUNT,
-            DEFAULT_COLUMN_LENGTH,
+            DEFAULT_COLUMN_HEIGHT,
             DEFAULT_WINDOW_HEIGHT,
             DEFAULT_ROOT_VALUE_INDEX,
             DEFAULT_ENERGY,
@@ -315,26 +325,37 @@ pub mod columns_window_tests {
     }
 
     #[test]
-    fn correct_column_index() {
+    fn correct_column_values() {
         let columns_window = ColumnsWindow::default();
-        assert_eq!(columns_window.correct_column_length(DEFAULT_COLUMN_LENGTH as i8), DEFAULT_COLUMN_LENGTH); //max value
-        assert_eq!(columns_window.correct_column_length(DEFAULT_COLUMN_LENGTH as i8 + 1), MIN_COLUMN_LENGTH);
-        assert_eq!(columns_window.correct_column_length(DEFAULT_COLUMN_LENGTH as i8*2), MIN_COLUMN_LENGTH);
-        assert_eq!(columns_window.correct_column_length(MIN_COLUMN_LENGTH as i8), MIN_COLUMN_LENGTH);
+        assert_eq!(columns_window.correct_column_values(DEFAULT_COLUMN_HEIGHT as i8), DEFAULT_COLUMN_HEIGHT); //max value
+        assert_eq!(columns_window.correct_column_values(DEFAULT_COLUMN_HEIGHT as i8 + 1), MIN_COLUMN_HEIGHT);
+        assert_eq!(columns_window.correct_column_values(DEFAULT_COLUMN_HEIGHT as i8*2), MIN_COLUMN_HEIGHT);
+        assert_eq!(columns_window.correct_column_values(MIN_COLUMN_HEIGHT as i8), MIN_COLUMN_HEIGHT); //min value
+        assert_eq!(columns_window.correct_column_values(MIN_COLUMN_HEIGHT as i8-1), DEFAULT_COLUMN_LENGTH as u8);
+        assert_eq!(columns_window.correct_column_values(DEFAULT_COLUMN_LENGTH), DEFAULT_COLUMN_LENGTH as u8);
+    }
+    #[test]
+    fn correct_columns_selected_index() {
+        let columns_window = ColumnsWindow::default();
+        assert_eq!(columns_window.correct_columns_selected_index(0), 0); //min value
+        assert_eq!(columns_window.correct_columns_selected_index(DEFAULT_COLUMN_HEIGHT as i8 - 1), DEFAULT_COLUMN_HEIGHT - 1); //max value
+        assert_eq!(columns_window.correct_columns_selected_index(DEFAULT_COLUMN_HEIGHT as i8), 0);
+        assert_eq!(columns_window.correct_columns_selected_index(-1), DEFAULT_COLUMN_HEIGHT - 1);
+        
     }
 
-    fn check_window_offset(columns_window: &ColumnsWindow, row_one: &WindowRow, row_two: &WindowRow, offset: u8) -> bool {
-        let results: Vec<bool> = row_one.iter().enumerate().map(|(i, row_one_value)| {let answer =  columns_window.correct_column_length((**row_one_value + offset) as i8); println!("{} == {}", answer, row_two[i]); *row_two[i] == answer}).collect();
+    fn check_window_offset(columns_window: &ColumnsWindow, row_one: &WindowRow, row_two: &WindowRow, offset: i8) -> bool {
+        let results: Vec<bool> = row_one.iter().enumerate().map(|(i, row_one_value)| {let answer =  columns_window.correct_column_values((**row_one_value as i8 + offset) as i8); println!("{} == {}", answer, row_two[i]); *row_two[i] == answer}).collect();
         println!("row_one: {:?}", row_one);
         println!("row_two: {:?}", row_two);
         !results.contains(&false)
-        }
+    }
 
     #[test]
     fn window() {
         let columns_window = ColumnsWindow::new(
             DEFAULT_COLUMN_AMOUNT,
-            DEFAULT_COLUMN_LENGTH,
+            DEFAULT_COLUMN_HEIGHT,
             3,
             DEFAULT_ROOT_VALUE_INDEX,
             DEFAULT_ENERGY,
@@ -343,6 +364,7 @@ pub mod columns_window_tests {
         let window = columns_window.window();
         assert_eq!(window.len() as u8, 3);
         assert!(check_window_offset(&columns_window, &window[1], &window[2], 1));
+        assert!(check_window_offset(&columns_window, &window[1], &window[0], -1));
     }
 
     #[test]

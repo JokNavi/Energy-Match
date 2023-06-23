@@ -41,7 +41,9 @@ pub enum NewGameWindowError {
 }
 
 #[derive(PartialEq, Debug)]
-pub enum SwipeError {}
+pub enum SwipeError {
+
+}
 
 #[derive(Debug, Clone)]
 pub struct GameWindow {
@@ -166,15 +168,15 @@ impl GameWindow {
         })
     }
 
-    // pub fn correct_column_values(&self, value: i8) -> u8 {
-    //     let column_length = (self.column_height - MIN_COLUMN_HEIGHT + 1) as i8;
-    //     let index = (value - MIN_COLUMN_HEIGHT as i8) % column_length;
-    //     //println!("{} % {} = {}", value, column_length, index);
-    //     if index < 0 {
-    //         return (self.column_height as i8 + index) as u8;
-    //     }
-    //     return (MIN_COLUMN_HEIGHT as i8 + index) as u8;
-    // }
+    pub fn correct_game_value(&self, value: i8) -> i8 {
+        let value = value - self.lowest_game_value;
+        let game_value_range_length = (self.highest_game_value - self.lowest_game_value) + 1;
+        let index = value % game_value_range_length;
+        if index < 0 {
+            return self.highest_game_value + index + 1;
+        }
+        return self.lowest_game_value + index;
+    }
 
     // pub fn correct_columns_selected_index(&self, value: i8) -> u8 {
     //     let index = value % self.column_height as i8;
@@ -445,5 +447,14 @@ pub mod columns_window_tests {
             game_window,
             GameWindowError::NewGameWindowError(NewGameWindowError::TooManyGameValues)
         );
+    }
+
+    #[test] 
+    fn correct_game_value(){
+        let game_window = GameWindow::default();
+        assert_eq!(game_window.correct_game_value(DEFAULT_LOWEST_GAME_VALUE), DEFAULT_LOWEST_GAME_VALUE);
+        assert_eq!(game_window.correct_game_value(DEFAULT_HIGHEST_GAME_VALUE), DEFAULT_HIGHEST_GAME_VALUE);
+        assert_eq!(game_window.correct_game_value(DEFAULT_HIGHEST_GAME_VALUE+1), DEFAULT_LOWEST_GAME_VALUE);
+        assert_eq!(game_window.correct_game_value(DEFAULT_LOWEST_GAME_VALUE-1), DEFAULT_HIGHEST_GAME_VALUE);
     }
 }

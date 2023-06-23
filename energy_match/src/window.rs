@@ -16,7 +16,8 @@ const DEFAULT_SPECIAL_VALUE_INDEX: i8 = 6;
 const DEFAULT_WINDOW_HEIGHT: i8 = 3; // can change
 const DEFAULT_GAME_VALUE_AMOUNT: i8 = 11; // can change
 
-pub type CurrentGameValues = Vec<i8>;
+pub type GameValues = Vec<i8>;
+pub type GameWindowView<'a> = Vec<GameValues>;
 
 #[derive(PartialEq, Debug)]
 pub enum GameWindowError {
@@ -41,9 +42,7 @@ pub enum NewGameWindowError {
 }
 
 #[derive(PartialEq, Debug)]
-pub enum SwipeError {
-
-}
+pub enum SwipeError {}
 
 #[derive(Debug, Clone)]
 pub struct GameWindow {
@@ -52,7 +51,7 @@ pub struct GameWindow {
     special_value_index: i8,
     window_height: i8,
     game_value_amount: i8,
-    current_game_values: CurrentGameValues,
+    current_game_values: GameValues,
 }
 
 impl GameWindow {
@@ -61,7 +60,7 @@ impl GameWindow {
         lowest_game_value: i8,
         special_value_index: i8,
         window_height: i8,
-        current_game_values: CurrentGameValues,
+        current_game_values: GameValues,
     ) -> Result<Self, GameWindowError> {
         match highest_game_value {
             _ if highest_game_value < MIN_HIGHEST_GAME_VALUE => {
@@ -178,30 +177,28 @@ impl GameWindow {
         return self.lowest_game_value + index;
     }
 
-    // pub fn correct_columns_selected_index(&self, value: i8) -> u8 {
-    //     let index = value % self.column_height as i8;
-    //     println!("{} % {} = {}", value, self.column_height as i8, index);
-    //     if index < 0 {
-    //         return (self.column_height as i8 + index) as u8;
-    //     }
-    //     return index as u8;
-    // }
-
-    // pub fn window(&self) -> Window {
-    //     let half_window_size = self.window_height as i8 / 2;
-    //     let mut window: Window = Vec::with_capacity(self.window_height as usize);
-    //     for window_index_ajustment in (-half_window_size)..=half_window_size {
-    //         let mut window_row: WindowRow = Vec::with_capacity(self.column_amount as usize);
-    //         for (i, column) in self.columns.iter().enumerate() {
-    //             let selected_index = self.correct_column_values(
-    //                 self.columns_selected_indexes[i] as i8 + window_index_ajustment,
-    //             );
-    //             window_row.push(&column[selected_index as usize]);
-    //         }
-    //         window.push(window_row);
-    //     }
-    //     window
-    // }
+    pub fn view(&self) -> GameWindowView {
+        let half_window_size = self.window_height / 2;
+        let mut view: GameWindowView = Vec::with_capacity(self.window_height as usize);
+        (1..=half_window_size).for_each(|i| {
+            view.push(
+                self.current_game_values
+                    .iter()
+                    .map(|game_value| self.correct_game_value(game_value - i))
+                    .collect::<GameValues>(),
+            )
+        });
+        view.push(self.current_game_values.clone());
+        (1..=half_window_size).for_each(|i| {
+            view.push(
+                self.current_game_values
+                    .iter()
+                    .map(|game_value| self.correct_game_value(game_value + i))
+                    .collect::<GameValues>(),
+            )
+        });
+        view
+    }
 
     // //both index parameters start from 1.
     // pub fn swipe_up(&mut self, index: i32, amount: i32) -> Result<(), SwipeError> {
@@ -389,7 +386,7 @@ pub mod columns_window_tests {
             GameWindowError::NewGameWindowError(NewGameWindowError::WindowHeightTooHigh)
         );
     }
-    
+
     #[test]
     fn new_current_game_values() {
         let game_window = GameWindow::new(
@@ -439,7 +436,7 @@ pub mod columns_window_tests {
             DEFAULT_LOWEST_GAME_VALUE,
             DEFAULT_SPECIAL_VALUE_INDEX,
             DEFAULT_WINDOW_HEIGHT,
-            vec![DEFAULT_LOWEST_GAME_VALUE; MAX_GAME_VALUE_AMOUNT as usize  + 1 ],
+            vec![DEFAULT_LOWEST_GAME_VALUE; MAX_GAME_VALUE_AMOUNT as usize + 1],
         )
         .unwrap_err();
 
@@ -449,12 +446,35 @@ pub mod columns_window_tests {
         );
     }
 
-    #[test] 
-    fn correct_game_value(){
+    #[test]
+    fn correct_game_value() {
         let game_window = GameWindow::default();
-        assert_eq!(game_window.correct_game_value(DEFAULT_LOWEST_GAME_VALUE), DEFAULT_LOWEST_GAME_VALUE);
-        assert_eq!(game_window.correct_game_value(DEFAULT_HIGHEST_GAME_VALUE), DEFAULT_HIGHEST_GAME_VALUE);
-        assert_eq!(game_window.correct_game_value(DEFAULT_HIGHEST_GAME_VALUE+1), DEFAULT_LOWEST_GAME_VALUE);
-        assert_eq!(game_window.correct_game_value(DEFAULT_LOWEST_GAME_VALUE-1), DEFAULT_HIGHEST_GAME_VALUE);
+        assert_eq!(
+            game_window.correct_game_value(DEFAULT_LOWEST_GAME_VALUE),
+            DEFAULT_LOWEST_GAME_VALUE
+        );
+        assert_eq!(
+            game_window.correct_game_value(DEFAULT_HIGHEST_GAME_VALUE),
+            DEFAULT_HIGHEST_GAME_VALUE
+        );
+        assert_eq!(
+            game_window.correct_game_value(DEFAULT_HIGHEST_GAME_VALUE + 1),
+            DEFAULT_LOWEST_GAME_VALUE
+        );
+        assert_eq!(
+            game_window.correct_game_value(DEFAULT_LOWEST_GAME_VALUE - 1),
+            DEFAULT_HIGHEST_GAME_VALUE
+        );
+    }
+
+    #[test]
+    fn view() {
+        let game_window = GameWindow::default();
+        let view = game_window.view();
+        assert_eq!(view.len() as i8, DEFAULT_WINDOW_HEIGHT);
+        let half_window_size = (game_window.window_height / 2) as usize;
+        assert_eq!(view[half_window_size], game_window.current_game_values);
+        assert_eq!(view[half_window_size + half_window_size][0], game_window.correct_game_value(game_window.current_game_values[0] + half_window_size as i8));
+        assert_eq!(view[half_window_size - half_window_size][0], game_window.correct_game_value(game_window.current_game_values[0] - half_window_size as i8));
     }
 }

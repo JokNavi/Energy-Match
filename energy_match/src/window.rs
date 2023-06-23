@@ -14,6 +14,8 @@ const MAX_WINDOW_HEIGHT: i8 = MAX_HIGHEST_GAME_VALUE;
 const MAX_GAME_VALUE_AMOUNT: i8 = 20; // can change
 const MAX_MOVE_AMOUNT: i8 = 127; // can change
 
+
+//for testing.
 const DEFAULT_LOWEST_GAME_VALUE: i8 = 1; // can change
 const DEFAULT_HIGHEST_GAME_VALUE: i8 = 8; // can change
 const DEFAULT_SPECIAL_VALUE_INDEX: i8 = 6;
@@ -251,12 +253,11 @@ impl GameWindow {
 }
 
 pub trait InitGameStruct {
-    fn init(&mut self);
+    fn randomise_game_values(&mut self);
 }
 
 impl InitGameStruct for GameWindow {
-
-    fn init(&mut self) {
+    fn randomise_game_values(&mut self) {
         let mut rng = thread_rng();
         self.current_game_values = (0..=self.game_value_amount)
             .map(|_| rng.gen_range(self.lowest_game_value..=self.highest_game_value))
@@ -482,7 +483,7 @@ pub mod columns_window_tests {
     #[test]
     fn init() {
         let mut game_window = GameWindow::default();
-        game_window.init();
+        game_window.randomise_game_values();
         assert!(!game_window.current_game_values.iter().all(|game_value| game_value == &DEFAULT_LOWEST_GAME_VALUE));
     }
 

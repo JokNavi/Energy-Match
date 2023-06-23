@@ -4,7 +4,7 @@
 
 You are presented with a window containing multiple ordered columns of values. <br>
 However only 3 values per column are visible at a time. <br>
-The purpose of the game is to cycle through each column so that the values visible in your window match the target window while not running out of energy. <br>
+The purpose of the game is to swipe through each column so that the values visible in your window match the target window while not running out of energy. <br>
 There is one special column per game. Usually this column is the center column. <br> 
 Upon cycling any column to the either side of this column. Any other column on that side of the special column will be rotated the same amount as the column you rotated. <br>
 
@@ -14,16 +14,16 @@ Each swipe up or down cycles one value and uses one energy. You can do multiple 
 
 
 ## Commands 
-There is only one command, the cycle command. <br>
-The basic structure of the cycle command is as follows: <br>
+There is only one command, the swipe command. <br>
+The basic structure of the swipe command is as follows: <br>
 ```
-cycle {index of root affected column} {direction} {amount} 
+swipe {index of root affected column} {direction} {amount} 
 ```
 
 ### examples:
 ```
-cycle 8 up 3
-cycle 2 down 4
+swipe 8 up 3
+swipe 2 down 4
 ```
 
 
@@ -41,7 +41,7 @@ cycle 2 down 4
 ## Example game window
 
 ## Default values
-Amount of columns: 10 <br>
+Amount of columns: 11 <br>
 Amount of sides per column: 8 <br>
 window height: 1 value <br>
 In generated levels the selected value visible from the window is random. but the columns are still ordered from 1 to X <br>
@@ -53,8 +53,9 @@ Amount of sides per column: 99 <br>
 
 ## Minimum values 
 Amount of columns: 1 <br>
-Amount of sides per column: 1 <br>
-All indexes start from 1. So both column indexing in the cycle command and the column values start from one. 
+Amount of sides per column: 2 <br>
+Amount of column rows visible in window: 1 <br>
+All indexes start from 1. So both column indexing in the swipe command and the column values start from one. 
 
 
 ## Main menu
@@ -88,7 +89,7 @@ All indexes start from 1. So both column indexing in the cycle command and the c
   index: [0, 1, 2, 3, 4,   5,   6, 7, 8, 9, 10]
 
 
-Enter a command: cycle 4 up 2
+Enter a command: swipe 4 up 2
 
 
                         LEVEL 1
@@ -115,7 +116,7 @@ Enter a command: cycle 4 up 2
   index: [0, 1, 2, 3, 4,   5,   6, 7, 8, 9, 10]
 
 
-Enter a command: cycle 3 down 1
+Enter a command: swipe 3 down 1
 
 
                         LEVEL 1

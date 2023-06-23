@@ -2,7 +2,7 @@ pub mod test;
 pub mod window;
 
 fn main() {
-    dbg!((3 as f32 / 2 as f32) as i8);
+    dbg!((3_f32 / 2_f32) as i8);
     let mut game = test::Game {
         current_game_values: vec![1, 2, 3],
     };

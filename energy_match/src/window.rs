@@ -1,14 +1,19 @@
+use rand::{thread_rng, Rng};
+
 const MIN_LOWEST_GAME_VALUE: i8 = 0; // can change.
 const MIN_HIGHEST_GAME_VALUE: i8 = MIN_LOWEST_GAME_VALUE + 1;
 const MIN_SPECIAL_VALUE_INDEX: i8 = 0;
 const MIN_WINDOW_HEIGHT: i8 = MIN_HIGHEST_GAME_VALUE;
 const MIN_GAME_VALUE_AMOUNT: i8 = 1; // can change
+const MIN_MOVE_AMOUNT: i8 = 1; // can change
 
 const MAX_HIGHEST_GAME_VALUE: i8 = 99; // can change
-const MAX_LOWEST_GAME_VALUE: i8 = MAX_HIGHEST_GAME_VALUE - 1;
-const MAX_SPECIAL_VALUE_INDEX: i8 = MAX_HIGHEST_GAME_VALUE;
+const MAX_LOWEST_GAME_VALUE: i8 = i8::MAX - MAX_HIGHEST_GAME_VALUE;
+const MAX_SPECIAL_VALUE_INDEX: i8 = MAX_GAME_VALUE_AMOUNT;
 const MAX_WINDOW_HEIGHT: i8 = MAX_HIGHEST_GAME_VALUE;
 const MAX_GAME_VALUE_AMOUNT: i8 = 20; // can change
+const MAX_MOVE_AMOUNT: i8 = 127; // can change
+
 
 const DEFAULT_LOWEST_GAME_VALUE: i8 = 1; // can change
 const DEFAULT_HIGHEST_GAME_VALUE: i8 = 8; // can change
@@ -17,7 +22,7 @@ const DEFAULT_WINDOW_HEIGHT: i8 = 3; // can change
 const DEFAULT_GAME_VALUE_AMOUNT: i8 = 11; // can change
 
 pub type GameValues = Vec<i8>;
-pub type GameWindowView<'a> = Vec<GameValues>;
+pub type GameWindowView = Vec<GameValues>;
 
 #[derive(PartialEq, Debug)]
 pub enum GameWindowError {
@@ -42,7 +47,12 @@ pub enum NewGameWindowError {
 }
 
 #[derive(PartialEq, Debug)]
-pub enum SwipeError {}
+pub enum SwipeError {
+    IndexTooLow,
+    IndexTooHigh,
+    MoveAmountTooLow,
+    MoveAmountTooHigh,
+}
 
 #[derive(Debug, Clone)]
 pub struct GameWindow {
@@ -174,7 +184,7 @@ impl GameWindow {
         if index < 0 {
             return self.highest_game_value + index + 1;
         }
-        return self.lowest_game_value + index;
+        self.lowest_game_value + index
     }
 
     pub fn view(&self) -> GameWindowView {
@@ -200,40 +210,46 @@ impl GameWindow {
         view
     }
 
-    // //both index parameters start from 1.
-    // pub fn swipe_up(&mut self, index: i32, amount: i32) -> Result<(), SwipeError> {
-    //     let index = index - 1;
-    //     match index {
-    //         _ if index < MIN_COLUMN_AMOUNT.into() => return Err(SwipeError::IndexTooSmall),
-    //         _ if index >= (self.column_amount - MIN_COLUMN_AMOUNT) as i32 => {
-    //             return Err(SwipeError::IndexTooBig)
-    //         }
-    //         _ => (),
-    //     };
-    //     match amount {
-    //         _ if amount < 1 => return Err(SwipeError::AmountTooFew),
-    //         _ if amount >= self.column_height.into() => return Err(SwipeError::AmountTooMany),
-    //         _ if amount > self.energy => return Err(SwipeError::NotEnoughEnergy),
-    //         _ => (),
-    //     };
+     pub fn swipe_up(&mut self, index: i32, amount: i32) -> Result<(), GameWindowError> {
+        let index = match index {
+             _ if index < MIN_GAME_VALUE_AMOUNT as i32 => return Err(GameWindowError::SwipeError(SwipeError::IndexTooLow)),
+             _ if index >= self.game_value_amount as i32 => return Err(GameWindowError::SwipeError(SwipeError::IndexTooHigh)),
+             _ => index as i8,
+        };
 
-    //     let (smaller_index, bigger_index) = order_indexes(index as u8, self.root_value_index);
-    //     (smaller_index..=bigger_index).for_each(|i| {
-    //         self.columns_selected_indexes[i] =
-    //             self.correct_column_values(self.columns_selected_indexes[i] as i8 - amount as i8)
-    //     });
-    //     self.energy = self.energy - amount;
-    //     Ok(())
-    // }
+        let amount = match amount {
+            _ if amount < MIN_MOVE_AMOUNT as i32 => return Err(GameWindowError::SwipeError(SwipeError::MoveAmountTooLow)),
+            _ if amount > MAX_MOVE_AMOUNT as i32 => return Err(GameWindowError::SwipeError(SwipeError::MoveAmountTooHigh)),
+            _ => amount as i8,
+        };
+        match index {
+           _ if index < self.special_value_index => self.current_game_values[0..index as usize].iter_mut().for_each(|game_value|  *game_value += amount),
+           _ if index == self.special_value_index => self.current_game_values[index as usize] += amount,
+           _ if index > self.special_value_index => self.current_game_values[index as usize..self.game_value_amount as usize].iter_mut().for_each(|game_value| *game_value += amount),
+           _ => unreachable!()
+        }
+
+        Ok(())
+    }
+}
+
+pub trait InitGameStruct {
+    fn init(&mut self);
+}
+
+impl InitGameStruct for GameWindow {
+
+    fn init(&mut self) {
+        let mut rng = thread_rng();
+        self.current_game_values = (0..=self.game_value_amount)
+            .map(|_| rng.gen_range(self.lowest_game_value..=self.highest_game_value))
+            .collect::<GameValues>();
+    }
 }
 
 impl Default for GameWindow {
     fn default() -> Self {
-        //let mut rng = thread_rng();
-        //let columns_selected_indexes = (0..DEFAULT_COLUMN_AMOUNT)
-        //    .into_iter()
-        //    .map(|_| rng.gen_range(0..DEFAULT_COLUMN_HEIGHT))
-        //    .collect::<ColumnsSelectedIndexes>();
+        
         GameWindow::new(
             DEFAULT_HIGHEST_GAME_VALUE,
             DEFAULT_LOWEST_GAME_VALUE,
@@ -447,6 +463,13 @@ pub mod columns_window_tests {
     }
 
     #[test]
+    fn init() {
+        let mut game_window = GameWindow::default();
+        game_window.init();
+        assert!(!game_window.current_game_values.iter().all(|game_value| game_value == &DEFAULT_LOWEST_GAME_VALUE));
+    }
+
+    #[test]
     fn correct_game_value() {
         let game_window = GameWindow::default();
         assert_eq!(
@@ -477,4 +500,18 @@ pub mod columns_window_tests {
         assert_eq!(view[half_window_size + half_window_size][0], game_window.correct_game_value(game_window.current_game_values[0] + half_window_size as i8));
         assert_eq!(view[half_window_size - half_window_size][0], game_window.correct_game_value(game_window.current_game_values[0] - half_window_size as i8));
     }
+
+    #[test]
+    fn swipe_up() {
+        let mut game_window = GameWindow::default();
+        assert_eq!(game_window.swipe_up(MIN_GAME_VALUE_AMOUNT as i32 - 1, MIN_MOVE_AMOUNT as i32).unwrap_err(), GameWindowError::SwipeError(SwipeError::IndexTooLow));
+        assert_eq!(game_window.swipe_up(DEFAULT_GAME_VALUE_AMOUNT as i32 + 1, MIN_MOVE_AMOUNT as i32).unwrap_err(), GameWindowError::SwipeError(SwipeError::IndexTooHigh));
+        assert_eq!(game_window.swipe_up(DEFAULT_GAME_VALUE_AMOUNT as i32, MIN_MOVE_AMOUNT as i32).unwrap_err(), GameWindowError::SwipeError(SwipeError::IndexTooHigh));
+        assert_eq!(game_window.swipe_up(MIN_GAME_VALUE_AMOUNT as i32, MIN_MOVE_AMOUNT as i32 - 1).unwrap_err(), GameWindowError::SwipeError(SwipeError::MoveAmountTooLow));
+        assert_eq!(game_window.swipe_up(MIN_GAME_VALUE_AMOUNT as i32, MAX_MOVE_AMOUNT as i32 + 1).unwrap_err(), GameWindowError::SwipeError(SwipeError::MoveAmountTooHigh));
+        let mut game_window = GameWindow::default();
+        let view = game_window.view();
+        game_window.swipe_up(MIN_GAME_VALUE_AMOUNT as i32, MIN_MOVE_AMOUNT as i32).unwrap();
+        debug_assert_eq!(view[0][0..MIN_GAME_VALUE_AMOUNT as usize], game_window.view()[0][0..MIN_GAME_VALUE_AMOUNT as usize].iter().map(|game_value| game_window.correct_game_value(game_value - MIN_MOVE_AMOUNT)).collect::<GameValues>()); //MIN_GAME_VALUE_AMOUNT has to smaller then DEFAULT_SPECIAL_VALUE_INDEX
+    }   
 }
